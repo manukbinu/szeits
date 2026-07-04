@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "szeits-static-export",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "out", "-l", "3001"],
+      "port": 3001
     }
   ]
 }
