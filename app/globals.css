@@ -1,12 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #f3f4f6;
-  --muted: #9ca3af;
+  --background: #f6f7f9;
+  --foreground: #0f172a;
+  --muted: #64748b;
   --brand-blue: #1f7ce0;
   --brand-green: #24c29a;
+  --brand-lime: #8fb832;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-soft-hover: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 32px rgba(15, 23, 42, 0.09);
+  --nav-hover: #f1f5f9;
+  --pressed-bg: #f1f5f9;
+}
+
+.dark {
+  --background: #0d0e13;
+  --foreground: #f3f4f6;
+  --muted: #94a3b8;
   --brand-lime: #b7db3b;
+  --surface: #15171e;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-soft-hover: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 32px rgba(0, 0, 0, 0.4);
+  --nav-hover: rgba(255, 255, 255, 0.06);
+  --pressed-bg: #1c1f27;
 }
 
 @theme inline {
@@ -16,6 +35,8 @@
   --color-brand-blue: var(--brand-blue);
   --color-brand-green: var(--brand-green);
   --color-brand-lime: var(--brand-lime);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-inter);
 }
@@ -27,12 +48,18 @@
 
 html {
   background: var(--background);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 h1,
@@ -84,4 +111,149 @@ h3,
 
 .animate-marquee {
   animation: marquee 30s linear infinite;
+}
+
+/* Clean SaaS surfaces */
+
+.neu-raised {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.neu-pressed {
+  background: var(--pressed-bg);
+  border: 1px solid var(--border);
+}
+
+.neu-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.neu-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.neu-card:hover {
+  box-shadow: var(--shadow-soft-hover);
+  transform: translateY(-2px);
+}
+
+.neu-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.neu-btn:hover {
+  border-color: var(--brand-blue);
+}
+
+.neu-btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  color: #ffffff;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s step-start infinite;
+}
+
+/* Glassmorphism */
+
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) inset, var(--shadow-soft);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
+}
+
+.dark .glass {
+  background: rgba(21, 23, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.06) inset, var(--shadow-soft);
+}
+
+.glass-hover:hover {
+  box-shadow: var(--shadow-soft-hover);
+  transform: translateY(-2px);
+}
+
+/* Interactive effects */
+
+.spotlight-card {
+  position: relative;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--x, 50%) var(--y, 50%),
+    rgba(31, 124, 224, 0.14),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+}
+
+.shine:hover::after {
+  left: 125%;
 }

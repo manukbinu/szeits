@@ -4,7 +4,7 @@ export default function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center ${className}`}>
       <Image
-        src="/logo.jpg"
+        src="/logo.jpeg"
         alt="SZEITS"
         width={1024}
         height={1024}

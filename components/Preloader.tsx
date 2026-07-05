@@ -34,7 +34,7 @@ export default function Preloader() {
             className="flex flex-col items-center gap-4"
           >
             <Logo className="text-2xl" />
-            <motion.div className="h-px w-40 overflow-hidden bg-white/10">
+            <motion.div className="h-px w-40 overflow-hidden bg-foreground/10">
               <motion.div
                 initial={{ x: "-100%" }}
                 animate={{ x: "0%" }}

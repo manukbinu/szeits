@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { services } from "@/lib/constants";
 
 const icons: Record<string, React.ReactNode> = {
@@ -45,52 +44,49 @@ const cardVariant = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-function ServiceCard({ service }: { service: (typeof services)[number] }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-  const springRX = useSpring(rotateX, { stiffness: 200, damping: 20 });
-  const springRY = useSpring(rotateY, { stiffness: 200, damping: 20 });
+const tileSpans = [
+  "lg:col-span-2 lg:row-span-2",
+  "lg:col-span-2 lg:row-span-1",
+  "lg:col-span-1 lg:row-span-1",
+  "lg:col-span-1 lg:row-span-1",
+];
 
+function ServiceCard({
+  service,
+  span,
+}: {
+  service: (typeof services)[number];
+  span: string;
+}) {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    rotateY.set(px * 10);
-    rotateX.set(-py * 10);
-  };
-
-  const handleMouseLeave = () => {
-    rotateX.set(0);
-    rotateY.set(0);
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
   };
 
   return (
     <motion.div
-      ref={ref}
       variants={cardVariant}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ rotateX: springRX, rotateY: springRY, transformPerspective: 800 }}
-      className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-8 transition-colors hover:border-white/25"
+      className={`neu-card spotlight-card flex flex-col justify-center rounded-3xl p-8 ${span}`}
     >
-      <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-green/0 blur-[80px] transition-colors duration-500 group-hover:bg-brand-green/25" />
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="url(#svcGradient)"
-        strokeWidth="1.5"
-        className="h-10 w-10"
-      >
-        <defs>
-          <linearGradient id="svcGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--brand-blue)" />
-            <stop offset="100%" stopColor="var(--brand-lime)" />
-          </linearGradient>
-        </defs>
-        {icons[service.icon]}
-      </svg>
+      <div className="neu-chip flex h-16 w-16 items-center justify-center rounded-2xl">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="url(#svcGradient)"
+          strokeWidth="1.5"
+          className="h-8 w-8"
+        >
+          <defs>
+            <linearGradient id="svcGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--brand-blue)" />
+              <stop offset="100%" stopColor="var(--brand-lime)" />
+            </linearGradient>
+          </defs>
+          {icons[service.icon]}
+        </svg>
+      </div>
       <h3 className="mt-6 font-display text-xl font-semibold">{service.title}</h3>
       <p className="mt-3 text-muted">{service.description}</p>
     </motion.div>
@@ -116,11 +112,10 @@ export default function Services() {
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={container}
-          className="grid gap-6 sm:grid-cols-2"
-          style={{ perspective: 800 }}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense"
         >
-          {services.map((service) => (
-            <ServiceCard key={service.title} service={service} />
+          {services.map((service, i) => (
+            <ServiceCard key={service.title} service={service} span={tileSpans[i]} />
           ))}
         </motion.div>
       </div>

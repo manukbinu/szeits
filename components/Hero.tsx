@@ -1,13 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { siteConfig } from "@/lib/constants";
 import Magnetic from "@/components/Magnetic";
-
-const RibbonShape = dynamic(() => import("@/components/three/RibbonShape"), {
-  ssr: false,
-});
+import TerminalWindow from "@/components/TerminalWindow";
 
 const container = {
   hidden: {},
@@ -29,7 +25,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden pt-24"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-24 pb-16"
     >
       <motion.div
         style={{ y: blobOneY }}
@@ -40,11 +36,7 @@ export default function Hero() {
         className="pointer-events-none absolute -right-40 bottom-0 h-[28rem] w-[28rem] rounded-full bg-brand-lime/10 blur-[140px]"
       />
 
-      <div className="absolute inset-0 -z-0 opacity-90">
-        <RibbonShape />
-      </div>
-
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-2 lg:px-10">
+      <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-6 lg:grid-cols-2 lg:px-10">
         <motion.div
           variants={container}
           initial="hidden"
@@ -53,9 +45,9 @@ export default function Hero() {
         >
           <motion.p
             variants={item}
-            className="mb-6 inline-block rounded-full border border-white/15 px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-muted"
+            className="neu-chip mb-6 inline-block rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-muted"
           >
-            Software Company &middot; Sharjah, UAE
+            Software Company &middot; Dubai, UAE
           </motion.p>
           <motion.h1
             variants={item}
@@ -74,7 +66,7 @@ export default function Hero() {
             <Magnetic>
               <a
                 href="#contact"
-                className="inline-block rounded-full bg-gradient-brand px-7 py-3.5 text-sm font-semibold text-black transition-transform hover:scale-105"
+                className="btn-primary shine bg-gradient-brand inline-block rounded-full px-7 py-3.5 text-sm font-semibold"
               >
                 Get in Touch
               </a>
@@ -82,14 +74,51 @@ export default function Hero() {
             <Magnetic>
               <a
                 href="#services"
-                className="inline-block rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold transition-colors hover:border-white/50"
+                className="neu-btn inline-block rounded-full px-7 py-3.5 text-sm font-semibold text-foreground"
               >
                 Our Services
               </a>
             </Magnetic>
           </motion.div>
         </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="relative z-10 flex min-w-0 justify-center lg:justify-end"
+        >
+          <TerminalWindow />
+        </motion.div>
       </div>
+
+      <motion.div
+        initial="hidden"
+        animate="show"
+        variants={container}
+        className="relative z-10 mx-auto mt-14 grid max-w-7xl grid-cols-1 gap-5 px-6 sm:grid-cols-3 lg:px-10"
+      >
+        {[
+          { label: "What we build", value: "Web · Mobile · AI · Cloud" },
+          { label: "Approach", value: "Custom-built, not templated" },
+          { label: "Based in", value: "Dubai, UAE" },
+        ].map((kpi) => (
+          <motion.div
+            key={kpi.label}
+            variants={item}
+            whileHover={{ y: -4, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="glass glass-hover rounded-2xl px-5 py-4"
+          >
+            <p className="text-xs uppercase tracking-[0.15em] text-muted">
+              {kpi.label}
+            </p>
+            <p className="mt-1 font-display text-lg font-semibold text-gradient">
+              {kpi.value}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}

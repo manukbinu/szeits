@@ -72,46 +72,61 @@ export default function Contact() {
           </h2>
         </motion.div>
 
-        <div className="grid gap-12 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense">
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.4 }}
             variants={fadeUp}
-            className="lg:col-span-2"
+            className="neu-chip flex flex-col justify-center rounded-2xl px-5 py-4 lg:col-span-1"
           >
-            <div className="space-y-8">
-              <div>
-                <p className="text-xs uppercase tracking-[0.15em] text-muted">
-                  Email
-                </p>
-                <a
-                  href={`mailto:${siteConfig.email}`}
-                  className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
-                >
-                  {siteConfig.email}
-                </a>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.15em] text-muted">
-                  Phone
-                </p>
-                <a
-                  href={`tel:${siteConfig.phoneHref}`}
-                  className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
-                >
-                  {siteConfig.phone}
-                </a>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.15em] text-muted">
-                  Location
-                </p>
-                <p className="mt-1 font-display text-xl font-semibold">
-                  {siteConfig.location}
-                </p>
-              </div>
-            </div>
+            <p className="text-xs uppercase tracking-[0.15em] text-muted">
+              Email
+            </p>
+            <a
+              href={`mailto:${siteConfig.email}`}
+              className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
+            >
+              {siteConfig.email}
+            </a>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={fadeUp}
+            className="neu-chip flex flex-col justify-center rounded-2xl px-5 py-4 lg:col-span-1"
+          >
+            <p className="text-xs uppercase tracking-[0.15em] text-muted">
+              Phone
+            </p>
+            <a
+              href={`tel:${siteConfig.phoneHref}`}
+              className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
+            >
+              {siteConfig.phone}
+            </a>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            variants={fadeUp}
+            className="neu-chip flex flex-col justify-center rounded-2xl px-5 py-4 lg:col-span-2"
+          >
+            <p className="text-xs uppercase tracking-[0.15em] text-muted">
+              Location
+            </p>
+            <a
+              href={siteConfig.mapLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
+            >
+              {siteConfig.location}
+            </a>
           </motion.div>
 
           <motion.form
@@ -120,7 +135,7 @@ export default function Contact() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
             onSubmit={handleSubmit}
-            className="space-y-5 lg:col-span-3"
+            className="space-y-5 lg:col-span-2 lg:row-span-2"
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <input
@@ -129,7 +144,7 @@ export default function Contact() {
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Your name"
-                className="rounded-xl border border-white/15 bg-white/[0.03] px-5 py-4 text-sm outline-none transition-colors focus:border-brand-green"
+                className="neu-pressed rounded-xl px-5 py-4 text-sm outline-none placeholder:text-muted"
               />
               <input
                 required
@@ -138,7 +153,7 @@ export default function Contact() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Your email"
-                className="rounded-xl border border-white/15 bg-white/[0.03] px-5 py-4 text-sm outline-none transition-colors focus:border-brand-green"
+                className="neu-pressed rounded-xl px-5 py-4 text-sm outline-none placeholder:text-muted"
               />
             </div>
             <textarea
@@ -148,13 +163,13 @@ export default function Contact() {
               onChange={handleChange}
               placeholder="Tell us about your project"
               rows={5}
-              className="w-full rounded-xl border border-white/15 bg-white/[0.03] px-5 py-4 text-sm outline-none transition-colors focus:border-brand-green"
+              className="neu-pressed w-full rounded-xl px-5 py-4 text-sm outline-none placeholder:text-muted"
             />
             <Magnetic>
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="rounded-full bg-gradient-brand px-7 py-3.5 text-sm font-semibold text-black transition-transform hover:scale-105 disabled:opacity-60"
+                className="btn-primary shine bg-gradient-brand rounded-full px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
               >
                 {status === "sending" ? "Sending..." : "Send Message"}
               </button>
@@ -170,6 +185,25 @@ export default function Contact() {
               </p>
             )}
           </motion.form>
+
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={fadeUp}
+            className="neu-raised overflow-hidden rounded-2xl p-2 lg:col-span-2"
+          >
+            <iframe
+              src={siteConfig.mapEmbedSrc}
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: 260 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={`${siteConfig.name} location on Google Maps`}
+              className="rounded-xl"
+            />
+          </motion.div>
         </div>
       </div>
     </section>
