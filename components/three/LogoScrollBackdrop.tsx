@@ -43,7 +43,7 @@ function ScannedModel({
   const smoothPointer = useRef({ x: 0, y: 0 });
   const { scene } = useGLTF("/models/hitem3d-model.glb");
 
-  const model = useMemo(() => {
+  const { model, fitRadius } = useMemo(() => {
     const clone = scene.clone(true);
     const box = new THREE.Box3().setFromObject(clone);
     const center = box.getCenter(new THREE.Vector3());
@@ -56,10 +56,11 @@ function ScannedModel({
 
     const wrapper = new THREE.Group();
     wrapper.add(clone);
-    return wrapper;
+    // Diagonal-based bounding sphere so the model fits at any rotation angle.
+    return { model: wrapper, fitRadius: size.length() * scale * 0.5 };
   }, [scene]);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const group = groupRef.current;
     if (!group) return;
 
@@ -73,6 +74,19 @@ function ScannedModel({
       0.4 + Math.sin(scrollRef.current * 0.0012) * 0.12 + smoothPointer.current.y * 0.45;
     group.position.y = Math.sin(scrollRef.current * 0.0008) * 0.2 - smoothPointer.current.y * 0.35;
     group.position.x = smoothPointer.current.x * 0.6;
+
+    // Pull the camera back on narrow/portrait viewports (mobile, tablet) so
+    // the model stays fully inside the frame regardless of screen shape.
+    const camera = state.camera as THREE.PerspectiveCamera;
+    const aspect = state.size.width / state.size.height;
+    const halfV = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2);
+    const halfH = halfV * aspect;
+    const margin = 1.25;
+    const targetDist = Math.min(
+      8,
+      Math.max(3.2, (fitRadius * margin) / halfV, (fitRadius * margin) / halfH)
+    );
+    camera.position.z += (targetDist - camera.position.z) * Math.min(1, delta * 4);
   });
 
   return <primitive ref={groupRef} object={model} />;
