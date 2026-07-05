@@ -71,7 +71,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
+      <body className="min-h-full flex flex-col text-foreground overflow-x-hidden">
         <LogoScrollBackdropLoader />
         <Preloader />
         <SmoothScroll>
