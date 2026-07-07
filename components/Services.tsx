@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { ServiceItem } from "@/lib/i18n/types";
 import StaggerHeading from "@/components/StaggerHeading";
+import { useTilt } from "@/lib/useTilt";
 
 const icons: Record<string, React.ReactNode> = {
   code: (
@@ -60,37 +61,43 @@ function ServiceCard({
   service: ServiceItem;
   span: string;
 }) {
+  const tilt = useTilt(6);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
     e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
+    tilt.onMouseMove(e);
   };
 
   return (
-    <motion.div
-      variants={cardVariant}
-      onMouseMove={handleMouseMove}
-      className={`neu-card spotlight-card flex flex-col justify-center rounded-3xl p-8 ${span}`}
-    >
-      <div className="neu-chip flex h-16 w-16 items-center justify-center rounded-2xl">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="url(#svcGradient)"
-          strokeWidth="1.5"
-          className="h-8 w-8"
-        >
-          <defs>
-            <linearGradient id="svcGradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="var(--brand-blue)" />
-              <stop offset="100%" stopColor="var(--brand-lime)" />
-            </linearGradient>
-          </defs>
-          {icons[service.icon]}
-        </svg>
-      </div>
-      <h3 className="mt-6 font-display text-xl font-semibold">{service.title}</h3>
-      <p className="mt-3 text-muted">{service.description}</p>
+    <motion.div variants={cardVariant} style={{ perspective: 800 }} className={span}>
+      <motion.div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={tilt.onMouseLeave}
+        style={tilt.style}
+        className="neu-card spotlight-card flex h-full flex-col justify-center rounded-3xl p-8"
+      >
+        <div className="neu-chip flex h-16 w-16 items-center justify-center rounded-2xl">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="url(#svcGradient)"
+            strokeWidth="1.5"
+            className="h-8 w-8"
+          >
+            <defs>
+              <linearGradient id="svcGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="var(--brand-blue)" />
+                <stop offset="100%" stopColor="var(--brand-lime)" />
+              </linearGradient>
+            </defs>
+            {icons[service.icon]}
+          </svg>
+        </div>
+        <h3 className="mt-6 font-display text-xl font-semibold">{service.title}</h3>
+        <p className="mt-3 text-muted">{service.description}</p>
+      </motion.div>
     </motion.div>
   );
 }

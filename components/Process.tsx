@@ -1,12 +1,15 @@
 "use client";
 
 import { useRef } from "react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
+import { useTilt } from "@/lib/useTilt";
 import StaggerHeading from "@/components/StaggerHeading";
+import type { ProcessStep } from "@/lib/i18n/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,6 +20,42 @@ const tileSpans = [
   "lg:col-span-1 lg:row-span-1",
   "lg:col-span-2 lg:row-span-1",
 ];
+
+function ProcessCard({
+  step,
+  span,
+  cardRef,
+}: {
+  step: ProcessStep;
+  span: string;
+  cardRef: (el: HTMLDivElement | null) => void;
+}) {
+  const tilt = useTilt(6);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
+    tilt.onMouseMove(e);
+  };
+
+  return (
+    <div ref={cardRef} style={{ perspective: 800 }} className={span}>
+      <motion.div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={tilt.onMouseLeave}
+        style={tilt.style}
+        className="neu-raised spotlight-card flex h-full flex-col justify-between rounded-3xl p-10"
+      >
+        <span className="font-display text-6xl font-bold text-gradient">{step.number}</span>
+        <div>
+          <h3 className="font-display text-2xl font-semibold">{step.title}</h3>
+          <p className="mt-3 text-muted">{step.description}</p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
 export default function Process() {
   const { t } = useLanguage();
@@ -89,28 +128,14 @@ export default function Process() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense">
           {t.process.steps.map((step, i) => (
-            <div
+            <ProcessCard
               key={step.number}
-              ref={(el) => {
+              step={step}
+              span={tileSpans[i]}
+              cardRef={(el) => {
                 cardsRef.current[i] = el;
               }}
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
-                e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
-              }}
-              className={`neu-raised spotlight-card flex flex-col justify-between rounded-3xl p-10 ${tileSpans[i]}`}
-            >
-              <span className="font-display text-6xl font-bold text-gradient">
-                {step.number}
-              </span>
-              <div>
-                <h3 className="font-display text-2xl font-semibold">
-                  {step.title}
-                </h3>
-                <p className="mt-3 text-muted">{step.description}</p>
-              </div>
-            </div>
+            />
           ))}
         </div>
       </div>
