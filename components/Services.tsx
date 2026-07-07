@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { ServiceItem } from "@/lib/i18n/types";
+import StaggerHeading from "@/components/StaggerHeading";
 
 const icons: Record<string, React.ReactNode> = {
   code: (
@@ -104,10 +105,11 @@ export default function Services() {
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
             {t.services.eyebrow}
           </p>
-          <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-            {t.services.headingBefore}
-            <span className="text-gradient">{t.services.headingHighlight}</span>
-          </h2>
+          <StaggerHeading
+            before={t.services.headingBefore}
+            highlight={t.services.headingHighlight}
+            className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
+          />
         </div>
 
         <motion.div

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { siteConfig } from "@/lib/constants";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Magnetic from "@/components/Magnetic";
+import StaggerHeading from "@/components/StaggerHeading";
 
 const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID;
 
@@ -68,10 +69,11 @@ export default function Contact() {
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
             {t.contact.eyebrow}
           </p>
-          <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-            {t.contact.headingBefore}
-            <span className="text-gradient">{t.contact.headingHighlight}</span>
-          </h2>
+          <StaggerHeading
+            before={t.contact.headingBefore}
+            highlight={t.contact.headingHighlight}
+            className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl"
+          />
         </motion.div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense">

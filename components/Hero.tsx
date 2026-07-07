@@ -4,6 +4,14 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Magnetic from "@/components/Magnetic";
 import TerminalWindow from "@/components/TerminalWindow";
+import StaggerText from "@/components/StaggerText";
+
+const HEADING_STAGGER = 0.035;
+const HEADING_BASE_DELAY = 0.32;
+
+function letterCount(text: string) {
+  return text.replace(/\s/g, "").length;
+}
 
 const container = {
   hidden: {},
@@ -18,8 +26,13 @@ const item = {
 };
 
 export default function Hero() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const { scrollYProgress } = useScroll();
+
+  const beforeDelay = HEADING_BASE_DELAY;
+  const highlightDelay = beforeDelay + letterCount(t.hero.headingBefore) * HEADING_STAGGER;
+  const afterDelay =
+    highlightDelay + letterCount(t.hero.headingHighlight) * HEADING_STAGGER;
   const blobOneY = useTransform(scrollYProgress, [0, 1], [0, 180]);
   const blobTwoY = useTransform(scrollYProgress, [0, 1], [0, -160]);
 
@@ -50,14 +63,28 @@ export default function Hero() {
           >
             {t.hero.eyebrow}
           </motion.p>
-          <motion.h1
-            variants={item}
-            className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
-          >
-            {t.hero.headingBefore}
-            <span className="text-gradient">{t.hero.headingHighlight}</span>
-            {t.hero.headingAfter}
-          </motion.h1>
+          {locale === "en" ? (
+            <h1 className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+              <StaggerText text={t.hero.headingBefore} delay={beforeDelay} />
+              <StaggerText
+                text={t.hero.headingHighlight}
+                delay={highlightDelay}
+                className="text-gradient"
+              />
+              {t.hero.headingAfter && (
+                <StaggerText text={t.hero.headingAfter} delay={afterDelay} />
+              )}
+            </h1>
+          ) : (
+            <motion.h1
+              variants={item}
+              className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
+            >
+              {t.hero.headingBefore}
+              <span className="text-gradient">{t.hero.headingHighlight}</span>
+              {t.hero.headingAfter}
+            </motion.h1>
+          )}
           <motion.p
             variants={item}
             className="mt-6 max-w-lg text-lg text-muted"

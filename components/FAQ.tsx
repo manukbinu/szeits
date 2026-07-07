@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import StaggerHeading from "@/components/StaggerHeading";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -82,10 +83,11 @@ export default function FAQ() {
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
             {t.faq.eyebrow}
           </p>
-          <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-            {t.faq.headingBefore}
-            <span className="text-gradient">{t.faq.headingHighlight}</span>
-          </h2>
+          <StaggerHeading
+            before={t.faq.headingBefore}
+            highlight={t.faq.headingHighlight}
+            className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
+          />
         </motion.div>
 
         <motion.div

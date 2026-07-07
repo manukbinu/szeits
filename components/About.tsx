@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import StaggerHeading from "@/components/StaggerHeading";
 
 const container = {
   hidden: {},
@@ -33,11 +34,12 @@ export default function About() {
             <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
               {t.about.eyebrow}
             </p>
-            <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-              {t.about.headingBefore}
-              <span className="text-gradient">{t.about.headingHighlight}</span>
-              {t.about.headingAfter}
-            </h2>
+            <StaggerHeading
+              before={t.about.headingBefore}
+              highlight={t.about.headingHighlight}
+              after={t.about.headingAfter}
+              className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
+            />
             <p className="mt-6 max-w-xl text-lg text-muted">{t.about.body}</p>
           </motion.div>
 

@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
+import StaggerHeading from "@/components/StaggerHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -78,10 +79,11 @@ export default function Process() {
         <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
           {t.process.eyebrow}
         </p>
-        <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-          {t.process.headingBefore}
-          <span className="text-gradient">{t.process.headingHighlight}</span>
-        </h2>
+        <StaggerHeading
+          before={t.process.headingBefore}
+          highlight={t.process.headingHighlight}
+          className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
+        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
