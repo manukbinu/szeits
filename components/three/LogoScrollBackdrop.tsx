@@ -1,9 +1,10 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 function useScrollRef() {
   const ref = useRef(0);
@@ -31,12 +32,25 @@ function usePointerRef() {
   return ref;
 }
 
+function useTabVisible() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const onChange = () => setVisible(document.visibilityState === "visible");
+    onChange();
+    document.addEventListener("visibilitychange", onChange);
+    return () => document.removeEventListener("visibilitychange", onChange);
+  }, []);
+  return visible;
+}
+
 function ScannedModel({
   scrollRef,
   pointerRef,
+  reducedMotion,
 }: {
   scrollRef: React.MutableRefObject<number>;
   pointerRef: React.MutableRefObject<{ x: number; y: number }>;
+  reducedMotion: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const autoYRef = useRef(0);
@@ -64,16 +78,21 @@ function ScannedModel({
     const group = groupRef.current;
     if (!group) return;
 
-    autoYRef.current += delta * 0.15;
-    const damp = Math.min(1, delta * 8);
-    smoothPointer.current.x += (pointerRef.current.x - smoothPointer.current.x) * damp;
-    smoothPointer.current.y += (pointerRef.current.y - smoothPointer.current.y) * damp;
+    if (reducedMotion) {
+      group.rotation.set(0.4, 0, 0);
+      group.position.set(0, 0, 0);
+    } else {
+      autoYRef.current += delta * 0.15;
+      const damp = Math.min(1, delta * 8);
+      smoothPointer.current.x += (pointerRef.current.x - smoothPointer.current.x) * damp;
+      smoothPointer.current.y += (pointerRef.current.y - smoothPointer.current.y) * damp;
 
-    group.rotation.y = autoYRef.current + smoothPointer.current.x * Math.PI;
-    group.rotation.x =
-      0.4 + Math.sin(scrollRef.current * 0.0012) * 0.12 + smoothPointer.current.y * 0.45;
-    group.position.y = Math.sin(scrollRef.current * 0.0008) * 0.2 - smoothPointer.current.y * 0.35;
-    group.position.x = smoothPointer.current.x * 0.6;
+      group.rotation.y = autoYRef.current + smoothPointer.current.x * Math.PI;
+      group.rotation.x =
+        0.4 + Math.sin(scrollRef.current * 0.0012) * 0.12 + smoothPointer.current.y * 0.45;
+      group.position.y = Math.sin(scrollRef.current * 0.0008) * 0.2 - smoothPointer.current.y * 0.35;
+      group.position.x = smoothPointer.current.x * 0.6;
+    }
 
     // Pull the camera back on narrow/portrait viewports (mobile, tablet) so
     // the model stays fully inside the frame regardless of screen shape.
@@ -86,7 +105,11 @@ function ScannedModel({
       8,
       Math.max(3.2, (fitRadius * margin) / halfV, (fitRadius * margin) / halfH)
     );
-    camera.position.z += (targetDist - camera.position.z) * Math.min(1, delta * 4);
+    if (reducedMotion) {
+      camera.position.z = targetDist;
+    } else {
+      camera.position.z += (targetDist - camera.position.z) * Math.min(1, delta * 4);
+    }
   });
 
   return <primitive ref={groupRef} object={model} />;
@@ -97,6 +120,8 @@ useGLTF.preload("/models/hitem3d-model.glb");
 export default function LogoScrollBackdrop() {
   const scrollRef = useScrollRef();
   const pointerRef = usePointerRef();
+  const tabVisible = useTabVisible();
+  const reducedMotion = useReducedMotion();
 
   return (
     <div
@@ -104,12 +129,16 @@ export default function LogoScrollBackdrop() {
       className="pointer-events-none fixed inset-0 opacity-[0.5]"
       style={{ zIndex: -1 }}
     >
-      <Canvas camera={{ position: [0, 0, 5], fov: 40 }}>
+      <Canvas
+        camera={{ position: [0, 0, 5], fov: 40 }}
+        dpr={[1, 1.5]}
+        frameloop={tabVisible ? "always" : "never"}
+      >
         <ambientLight intensity={0.7} />
         <directionalLight position={[3, 4, 5]} intensity={1.2} />
         <directionalLight position={[-3, -2, -4]} intensity={0.4} />
         <Suspense fallback={null}>
-          <ScannedModel scrollRef={scrollRef} pointerRef={pointerRef} />
+          <ScannedModel scrollRef={scrollRef} pointerRef={pointerRef} reducedMotion={reducedMotion} />
         </Suspense>
       </Canvas>
     </div>

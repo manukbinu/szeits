@@ -112,6 +112,28 @@ h3,
   animation: marquee 30s linear infinite;
 }
 
+@keyframes gradient-drift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.three-fallback-gradient {
+  background: linear-gradient(
+    120deg,
+    var(--brand-blue),
+    var(--brand-green),
+    var(--brand-lime),
+    var(--brand-blue)
+  );
+  background-size: 300% 300%;
+  animation: gradient-drift 12s ease infinite;
+}
+
 /* Clean SaaS surfaces */
 
 .neu-raised {
@@ -137,19 +159,10 @@ h3,
   transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.neu-card:hover {
-  box-shadow: var(--shadow-soft-hover);
-  transform: translateY(-2px);
-}
-
 .neu-btn {
   background: var(--surface);
   border: 1px solid var(--border);
   transition: border-color 0.15s ease, transform 0.15s ease;
-}
-
-.neu-btn:hover {
-  border-color: var(--brand-blue);
 }
 
 .neu-btn:active {
@@ -161,12 +174,33 @@ h3,
   transition: filter 0.15s ease, transform 0.15s ease;
 }
 
-.btn-primary:hover {
-  filter: brightness(1.08);
-}
-
 .btn-primary:active {
   transform: scale(0.96);
+}
+
+/* Hover-only micro-interactions: scoped to devices that actually support
+   hover so taps on touch screens don't leave a "stuck" hover state. */
+@media (hover: hover) and (pointer: fine) {
+  .neu-card:hover {
+    box-shadow: var(--shadow-soft-hover);
+    transform: translateY(-2px);
+  }
+
+  .neu-btn:hover {
+    border-color: var(--brand-blue);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.08);
+  }
+}
+
+/* Touch equivalent: brief press feedback instead of hover */
+@media (hover: none) {
+  .neu-card:active {
+    box-shadow: var(--shadow-soft-hover);
+    transform: scale(0.98);
+  }
 }
 
 @keyframes blink {
@@ -201,9 +235,9 @@ h3,
   box-shadow: 0 1px 1px rgba(255, 255, 255, 0.06) inset, var(--shadow-soft);
 }
 
-.glass-hover:hover {
-  box-shadow: var(--shadow-soft-hover);
-  transform: translateY(-2px);
+html[dir="rtl"] {
+  --font-sans: var(--font-arabic), Tahoma, Arial, sans-serif;
+  --font-display: var(--font-arabic), Tahoma, Arial, sans-serif;
 }
 
 /* Interactive effects */
@@ -225,10 +259,6 @@ h3,
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
-}
-
-.spotlight-card:hover::before {
-  opacity: 1;
 }
 
 .shine {
@@ -253,6 +283,41 @@ h3,
   transition: left 0.65s ease;
 }
 
-.shine:hover::after {
-  left: 125%;
+@media (hover: hover) and (pointer: fine) {
+  .glass-hover:hover {
+    box-shadow: var(--shadow-soft-hover);
+    transform: translateY(-2px);
+  }
+
+  .spotlight-card:hover::before {
+    opacity: 1;
+  }
+
+  .shine:hover::after {
+    left: 125%;
+  }
+}
+
+@media (hover: none) {
+  .glass-hover:active {
+    box-shadow: var(--shadow-soft-hover);
+    transform: scale(0.98);
+  }
+
+  .shine:active::after {
+    left: 125%;
+  }
+}
+
+/* Respect prefers-reduced-motion: neutralize CSS animations/transitions
+   (marquee ticker, hover transforms, shine sweep, cursor blink, etc.) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

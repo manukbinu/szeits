@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "@/lib/useReducedMotion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,6 +16,10 @@ export default function SmoothScroll({
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    // Reduced-motion users get native (instant) scrolling; ScrollTrigger
+    // still works off the browser's own scroll events without Lenis.
+    if (prefersReducedMotion()) return;
+
     const lenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

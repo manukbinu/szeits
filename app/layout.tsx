@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk, Cairo } from "next/font/google";
+import { MotionConfig } from "framer-motion";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
@@ -11,6 +12,8 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import BackToTop from "@/components/BackToTop";
 import LogoScrollBackdropLoader from "@/components/three/LogoScrollBackdropLoader";
 import { siteConfig } from "@/lib/constants";
+import { en } from "@/lib/i18n/en";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 const themeInitScript = `
 (function() {
@@ -18,6 +21,18 @@ const themeInitScript = `
     var stored = localStorage.getItem('theme');
     var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
     if (dark) document.documentElement.classList.add('dark');
+  } catch (e) {}
+})();
+`;
+
+const langInitScript = `
+(function() {
+  try {
+    var stored = localStorage.getItem('locale');
+    if (stored === 'ar') {
+      document.documentElement.lang = 'ar';
+      document.documentElement.dir = 'rtl';
+    }
   } catch (e) {}
 })();
 `;
@@ -33,9 +48,15 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["500", "600", "700"],
 });
 
+const cairo = Cairo({
+  variable: "--font-arabic",
+  subsets: ["arabic"],
+  weight: ["500", "600", "700"],
+});
+
 export const metadata: Metadata = {
   title: `${siteConfig.name} — Software Company in Dubai, UAE`,
-  description: siteConfig.description,
+  description: en.siteConfig.description,
   keywords: [
     "software company Dubai",
     "software company UAE",
@@ -46,7 +67,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: `${siteConfig.name} — Software Company in Dubai, UAE`,
-    description: siteConfig.description,
+    description: en.siteConfig.description,
     url: "https://szeits.com",
     siteName: siteConfig.name,
     locale: "en_AE",
@@ -65,24 +86,30 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      dir="ltr"
+      className={`${inter.variable} ${spaceGrotesk.variable} ${cairo.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: langInitScript }} />
       </head>
       <body className="min-h-full flex flex-col text-foreground overflow-x-hidden">
-        <LogoScrollBackdropLoader />
-        <Preloader />
-        <SmoothScroll>
-          <CustomCursor />
-          <ScrollProgress />
-          <Navbar />
-          {children}
-          <Footer />
-          <WhatsAppButton />
-          <BackToTop />
-        </SmoothScroll>
+        <LanguageProvider>
+          <MotionConfig reducedMotion="user">
+            <LogoScrollBackdropLoader />
+            <Preloader />
+            <SmoothScroll>
+              <CustomCursor />
+              <ScrollProgress />
+              <Navbar />
+              {children}
+              <Footer />
+              <WhatsAppButton />
+              <BackToTop />
+            </SmoothScroll>
+          </MotionConfig>
+        </LanguageProvider>
       </body>
     </html>
   );

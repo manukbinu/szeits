@@ -1,7 +1,10 @@
-import { marqueeItems } from "@/lib/constants";
+"use client";
+
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Marquee() {
-  const items = [...marqueeItems, ...marqueeItems];
+  const { t } = useLanguage();
+  const items = [...t.marquee.items, ...t.marquee.items];
 
   return (
     <div className="neu-pressed relative overflow-hidden py-6">

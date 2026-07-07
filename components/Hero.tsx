@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { siteConfig } from "@/lib/constants";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Magnetic from "@/components/Magnetic";
 import TerminalWindow from "@/components/TerminalWindow";
 
@@ -18,6 +18,7 @@ const item = {
 };
 
 export default function Hero() {
+  const { t } = useLanguage();
   const { scrollYProgress } = useScroll();
   const blobOneY = useTransform(scrollYProgress, [0, 1], [0, 180]);
   const blobTwoY = useTransform(scrollYProgress, [0, 1], [0, -160]);
@@ -47,20 +48,21 @@ export default function Hero() {
             variants={item}
             className="neu-chip mb-6 inline-block rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-muted"
           >
-            Software Company &middot; Dubai, UAE
+            {t.hero.eyebrow}
           </motion.p>
           <motion.h1
             variants={item}
             className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
           >
-            Software, <span className="text-gradient">engineered</span> for
-            what&apos;s next.
+            {t.hero.headingBefore}
+            <span className="text-gradient">{t.hero.headingHighlight}</span>
+            {t.hero.headingAfter}
           </motion.h1>
           <motion.p
             variants={item}
             className="mt-6 max-w-lg text-lg text-muted"
           >
-            {siteConfig.description}
+            {t.siteConfig.description}
           </motion.p>
           <motion.div variants={item} className="mt-10 flex flex-wrap gap-4">
             <Magnetic>
@@ -68,7 +70,7 @@ export default function Hero() {
                 href="#contact"
                 className="btn-primary shine bg-gradient-brand inline-block rounded-full px-7 py-3.5 text-sm font-semibold"
               >
-                Get in Touch
+                {t.hero.ctaPrimary}
               </a>
             </Magnetic>
             <Magnetic>
@@ -76,7 +78,7 @@ export default function Hero() {
                 href="#services"
                 className="neu-btn inline-block rounded-full px-7 py-3.5 text-sm font-semibold text-foreground"
               >
-                Our Services
+                {t.hero.ctaSecondary}
               </a>
             </Magnetic>
           </motion.div>
@@ -98,15 +100,12 @@ export default function Hero() {
         variants={container}
         className="relative z-10 mx-auto mt-14 grid max-w-7xl grid-cols-1 gap-5 px-6 sm:grid-cols-3 lg:px-10"
       >
-        {[
-          { label: "What we build", value: "Web · Mobile · AI · Cloud" },
-          { label: "Approach", value: "Custom-built, not templated" },
-          { label: "Based in", value: "Dubai, UAE" },
-        ].map((kpi) => (
+        {t.hero.kpis.map((kpi) => (
           <motion.div
             key={kpi.label}
             variants={item}
             whileHover={{ y: -4, scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="glass glass-hover rounded-2xl px-5 py-4"
           >
@@ -126,7 +125,7 @@ export default function Hero() {
         transition={{ delay: 1.2, duration: 0.8 }}
         className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted"
       >
-        <span>Scroll</span>
+        <span>{t.hero.scroll}</span>
         <span className="h-10 w-px animate-pulse bg-gradient-brand" />
       </motion.div>
     </section>

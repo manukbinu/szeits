@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function ThemeToggle({ className = "" }: { className?: string }) {
+  const { t } = useLanguage();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -22,8 +24,8 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
     <button
       type="button"
       onClick={toggle}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className={`neu-btn flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${className}`}
+      aria-label={isDark ? t.aria.themeToLight : t.aria.themeToDark}
+      className={`neu-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${className}`}
     >
       {isDark ? (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-foreground">

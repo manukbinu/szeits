@@ -5,9 +5,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import Logo from "@/components/Logo";
 import Magnetic from "@/components/Magnetic";
 import ThemeToggle from "@/components/ThemeToggle";
-import { navLinks } from "@/lib/constants";
+import LanguageToggle from "@/components/LanguageToggle";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Navbar() {
+  const { t } = useLanguage();
+  const navLinks = t.nav.links;
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeHref, setActiveHref] = useState("#home");
@@ -67,6 +70,7 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-3">
+          <LanguageToggle />
           <ThemeToggle />
 
           <div className="hidden md:block">
@@ -75,15 +79,15 @@ export default function Navbar() {
                 href="#contact"
                 className="btn-primary shine bg-gradient-brand inline-block rounded-full px-5 py-2.5 text-sm font-medium"
               >
-                Get in Touch
+                {t.nav.cta}
               </a>
             </Magnetic>
           </div>
 
           <button
-            className="neu-raised flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
+            className="neu-raised flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
             onClick={() => setMenuOpen((o) => !o)}
-            aria-label="Toggle menu"
+            aria-label={t.nav.toggleMenu}
           >
             <span
               className={`h-0.5 w-5 bg-foreground transition-transform ${
@@ -131,7 +135,7 @@ export default function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="btn-primary shine bg-gradient-brand inline-block rounded-full px-5 py-2.5 text-sm font-medium"
                 >
-                  Get in Touch
+                  {t.nav.cta}
                 </a>
               </li>
             </ul>

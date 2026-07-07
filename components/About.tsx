@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const container = {
   hidden: {},
@@ -12,12 +13,9 @@ const tileVariant = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-const highlights = [
-  { label: "Based in", value: "Dubai, UAE" },
-  { label: "Focus", value: "Web, AI & Cloud" },
-];
-
 export default function About() {
+  const { t } = useLanguage();
+
   return (
     <section id="about" className="relative py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -33,33 +31,24 @@ export default function About() {
             className="neu-raised rounded-3xl p-10 lg:col-span-2 lg:row-span-2"
           >
             <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
-              About SZEITS
+              {t.about.eyebrow}
             </p>
             <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-              A software company built for the region&apos;s{" "}
-              <span className="text-gradient">next decade.</span>
+              {t.about.headingBefore}
+              <span className="text-gradient">{t.about.headingHighlight}</span>
+              {t.about.headingAfter}
             </h2>
-            <p className="mt-6 max-w-xl text-lg text-muted">
-              Based in Dubai, United Arab Emirates, SZEITS partners with
-              ambitious businesses to design, build, and scale digital
-              products &mdash; from custom software and mobile apps to
-              AI-driven automation and cloud infrastructure. We combine
-              engineering rigor with a design-first mindset to ship products
-              that hold up under real-world growth.
-            </p>
+            <p className="mt-6 max-w-xl text-lg text-muted">{t.about.body}</p>
           </motion.div>
 
           <motion.div
             variants={tileVariant}
             className="neu-raised flex items-center rounded-3xl p-10 lg:col-span-2 lg:row-span-1"
           >
-            <p className="font-display text-2xl leading-snug">
-              &ldquo;We build the software layer that lets businesses in the
-              UAE move faster than their market.&rdquo;
-            </p>
+            <p className="font-display text-2xl leading-snug">&ldquo;{t.about.quote}&rdquo;</p>
           </motion.div>
 
-          {highlights.map((h) => (
+          {t.about.highlights.map((h) => (
             <motion.div
               key={h.label}
               variants={tileVariant}

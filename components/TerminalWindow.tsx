@@ -46,6 +46,7 @@ const lineVariant = {
 export default function TerminalWindow() {
   return (
     <div
+      dir="ltr"
       className="w-full min-w-0 max-w-lg rounded-2xl border p-3"
       style={{
         background: "#0d1117",

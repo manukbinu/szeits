@@ -1,12 +1,16 @@
+"use client";
+
 import { techStack } from "@/lib/constants";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function TechMarquee() {
+  const { t } = useLanguage();
   const items = [...techStack, ...techStack];
 
   return (
     <div className="relative overflow-hidden border-y border-border py-8">
       <p className="mb-6 text-center text-xs uppercase tracking-[0.2em] text-muted">
-        Technologies we build with
+        {t.techMarquee.heading}
       </p>
       <div className="relative flex w-max animate-marquee gap-4">
         {[...items, ...items].map((tech, i) => (

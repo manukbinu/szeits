@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { faqItems } from "@/lib/constants";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -25,7 +25,7 @@ function FAQItem({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-4 px-6 py-5 text-left"
+        className="flex w-full items-center gap-4 px-6 py-5 text-start"
         aria-expanded={open}
       >
         <span className="neu-chip flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
@@ -57,7 +57,7 @@ function FAQItem({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="px-6 pb-6 pl-[4.75rem] text-muted">{answer}</p>
+            <p className="px-6 pb-6 ps-[4.75rem] text-muted">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -66,6 +66,7 @@ function FAQItem({
 }
 
 export default function FAQ() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -79,10 +80,11 @@ export default function FAQ() {
           className="mb-16 text-center"
         >
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
-            FAQ
+            {t.faq.eyebrow}
           </p>
           <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-            Questions, <span className="text-gradient">answered.</span>
+            {t.faq.headingBefore}
+            <span className="text-gradient">{t.faq.headingHighlight}</span>
           </h2>
         </motion.div>
 
@@ -93,7 +95,7 @@ export default function FAQ() {
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
           className="space-y-4"
         >
-          {faqItems.map((item, i) => (
+          {t.faq.items.map((item, i) => (
             <FAQItem
               key={item.question}
               question={item.question}

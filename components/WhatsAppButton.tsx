@@ -1,6 +1,10 @@
+"use client";
+
 import { siteConfig } from "@/lib/constants";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function WhatsAppButton() {
+  const { t } = useLanguage();
   const number = siteConfig.phoneHref.replace(/[^\d]/g, "");
 
   return (
@@ -8,7 +12,7 @@ export default function WhatsAppButton() {
       href={`https://wa.me/${number}`}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with us on WhatsApp"
+      aria-label={t.aria.whatsapp}
       className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95"
       style={{ background: "#25D366", boxShadow: "0 8px 24px rgba(37,211,102,0.45)" }}
     >

@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import Logo from "@/components/Logo";
+
+const LottieLoader = dynamic(() => import("@/components/LottieLoader"), {
+  ssr: false,
+  loading: () => <div className="h-12 w-12 animate-pulse rounded-full border-2 border-dashed border-brand-blue/40" />,
+});
 
 export default function Preloader() {
   const [loading, setLoading] = useState(true);
@@ -34,6 +40,7 @@ export default function Preloader() {
             className="flex flex-col items-center gap-4"
           >
             <Logo className="text-2xl" />
+            <LottieLoader />
             <motion.div className="h-px w-40 overflow-hidden bg-foreground/10">
               <motion.div
                 initial={{ x: "-100%" }}

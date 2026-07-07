@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { services } from "@/lib/constants";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import type { ServiceItem } from "@/lib/i18n/types";
 
 const icons: Record<string, React.ReactNode> = {
   code: (
@@ -55,7 +56,7 @@ function ServiceCard({
   service,
   span,
 }: {
-  service: (typeof services)[number];
+  service: ServiceItem;
   span: string;
 }) {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -94,16 +95,18 @@ function ServiceCard({
 }
 
 export default function Services() {
+  const { t } = useLanguage();
+
   return (
     <section id="services" className="relative py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mb-16 max-w-2xl">
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
-            What We Do
+            {t.services.eyebrow}
           </p>
           <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-            Services built to move your{" "}
-            <span className="text-gradient">business forward.</span>
+            {t.services.headingBefore}
+            <span className="text-gradient">{t.services.headingHighlight}</span>
           </h2>
         </div>
 
@@ -114,7 +117,7 @@ export default function Services() {
           variants={container}
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense"
         >
-          {services.map((service, i) => (
+          {t.services.items.map((service, i) => (
             <ServiceCard key={service.title} service={service} span={tileSpans[i]} />
           ))}
         </motion.div>
