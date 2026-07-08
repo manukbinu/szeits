@@ -5,8 +5,9 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Magnetic from "@/components/Magnetic";
 import TerminalWindow from "@/components/TerminalWindow";
 import StaggerText from "@/components/StaggerText";
+import OrbitNodes from "@/components/three/OrbitNodes";
 
-const HEADING_STAGGER = 0.035;
+const HEADING_STAGGER = 0.06;
 const HEADING_BASE_DELAY = 0.32;
 
 function letterCount(text: string) {
@@ -65,14 +66,15 @@ export default function Hero() {
           </motion.p>
           {locale === "en" ? (
             <h1 className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-              <StaggerText text={t.hero.headingBefore} delay={beforeDelay} />
+              <StaggerText text={t.hero.headingBefore} delay={beforeDelay} stagger={HEADING_STAGGER} />
               <StaggerText
                 text={t.hero.headingHighlight}
                 delay={highlightDelay}
+                stagger={HEADING_STAGGER}
                 className="text-gradient"
               />
               {t.hero.headingAfter && (
-                <StaggerText text={t.hero.headingAfter} delay={afterDelay} />
+                <StaggerText text={t.hero.headingAfter} delay={afterDelay} stagger={HEADING_STAGGER} />
               )}
             </h1>
           ) : (
@@ -111,14 +113,17 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="relative z-10 flex min-w-0 justify-center lg:justify-end"
-        >
-          <TerminalWindow />
-        </motion.div>
+        <div className="relative flex min-w-0 justify-center lg:justify-end">
+          <OrbitNodes />
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="relative z-10"
+          >
+            <TerminalWindow />
+          </motion.div>
+        </div>
       </div>
 
       <motion.div
