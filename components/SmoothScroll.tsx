@@ -42,7 +42,13 @@ export default function SmoothScroll({
       const el = document.querySelector(href);
       if (el) {
         e.preventDefault();
-        lenis.scrollTo(el as HTMLElement, { offset: -80 });
+        // Lenis's configured duration is tuned for short wheel-throw distances;
+        // long anchor jumps (e.g. "Home" from far down the page) need a longer
+        // duration too, or they cover thousands of pixels in ~1s and blow
+        // through pinned/scroll-triggered sections too fast to settle cleanly.
+        const distance = Math.abs(el.getBoundingClientRect().top - 80);
+        const duration = Math.min(2.2, Math.max(1.1, distance / 2200));
+        lenis.scrollTo(el as HTMLElement, { offset: -80, duration });
       }
     };
     document.addEventListener("click", anchorClickHandler);

@@ -81,7 +81,7 @@ export default function Process() {
             start: "top top",
             end: () => `+=${cards.length * 300}`,
             pin: true,
-            scrub: 1,
+            scrub: true,
             anticipatePin: 1,
           },
         });
