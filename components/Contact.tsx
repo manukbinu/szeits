@@ -200,7 +200,6 @@ export default function Contact() {
               width="100%"
               height="100%"
               style={{ border: 0 }}
-              loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title={`${siteConfig.name} location on Google Maps`}
               className="min-h-[70px] rounded-xl sm:min-h-[120px]"

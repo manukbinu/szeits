@@ -114,7 +114,7 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        <div className="relative hidden min-w-0 justify-center sm:flex lg:justify-end">
+        <div className="relative flex min-w-0 justify-center lg:justify-end">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -132,9 +132,9 @@ export default function Hero() {
         variants={container}
         className="relative z-10 mx-auto mt-4 grid max-w-7xl grid-cols-3 gap-2 px-6 sm:mt-6 sm:gap-4 lg:px-10"
       >
-        {t.hero.kpis.map((kpi) => (
+        {t.hero.kpis.map((kpi, i) => (
           <motion.div
-            key={kpi.label}
+            key={i}
             variants={item}
             whileHover={{ y: -4, scale: 1.02 }}
             whileTap={{ scale: 0.97 }}

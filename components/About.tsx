@@ -52,9 +52,9 @@ export default function About() {
             <p className="font-display text-base leading-snug">&ldquo;{t.about.quote}&rdquo;</p>
           </motion.div>
 
-          {t.about.highlights.map((h) => (
+          {t.about.highlights.map((h, i) => (
             <motion.div
-              key={h.label}
+              key={i}
               variants={tileVariant}
               className="neu-chip flex flex-col justify-center rounded-2xl px-4 py-3 lg:col-span-1"
             >

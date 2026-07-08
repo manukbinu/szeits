@@ -37,8 +37,8 @@ export default function Footer() {
             {t.footer.servicesHeading}
           </p>
           <ul className="mt-4 space-y-3 text-sm text-muted">
-            {t.services.items.map((service) => (
-              <li key={service.title}>
+            {t.services.items.map((service, i) => (
+              <li key={i}>
                 <a href="#services" className="hover:text-foreground">
                   {service.title}
                 </a>

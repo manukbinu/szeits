@@ -101,7 +101,7 @@ export default function FAQ() {
         >
           {t.faq.items.map((item, i) => (
             <FAQItem
-              key={item.question}
+              key={i}
               question={item.question}
               answer={item.answer}
               open={openIndex === i}

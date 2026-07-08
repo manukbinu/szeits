@@ -129,7 +129,7 @@ export default function Services() {
           className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-flow-dense"
         >
           {t.services.items.map((service, i) => (
-            <ServiceCard key={service.title} service={service} span={tileSpans[i]} />
+            <ServiceCard key={i} service={service} span={tileSpans[i]} />
           ))}
         </motion.div>
       </div>

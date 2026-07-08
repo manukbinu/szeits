@@ -115,7 +115,7 @@ function CosmicDust({ count }: { count: number }) {
 export default function SolarScene({
   sections,
   flightProgress,
-  velocity,
+  cameraProgress,
   activeIndex,
   onActiveChange,
   onJump,
@@ -125,7 +125,7 @@ export default function SolarScene({
 }: {
   sections: Record<PlanetId, ReactNode>;
   flightProgress: React.MutableRefObject<number>;
-  velocity: React.MutableRefObject<number>;
+  cameraProgress: React.MutableRefObject<number>;
   activeIndex: number;
   onActiveChange: (index: number) => void;
   onJump: (index: number) => void;
@@ -146,7 +146,7 @@ export default function SolarScene({
   useFrame(() => {
     if (reducedMotion) return;
     const nearest = Math.round(
-      THREE.MathUtils.clamp(flightProgress.current, 0, PLANETS.length - 1)
+      THREE.MathUtils.clamp(cameraProgress.current, 0, PLANETS.length - 1)
     );
     if (nearest !== lastActiveRef.current) {
       lastActiveRef.current = nearest;
@@ -176,7 +176,11 @@ export default function SolarScene({
         </group>
       ))}
 
-      <CameraRig flightProgress={flightProgress} velocity={velocity} reducedMotion={reducedMotion} />
+      <CameraRig
+        flightProgress={flightProgress}
+        cameraProgress={cameraProgress}
+        reducedMotion={reducedMotion}
+      />
     </>
   );
 }

@@ -9,26 +9,19 @@ const MAX_PROGRESS = PLANETS.length - 1;
 
 export default function CameraRig({
   flightProgress: flightProgressRef,
-  velocity: velocityRef,
+  cameraProgress: cameraProgressRef,
   reducedMotion,
 }: {
   flightProgress: React.MutableRefObject<number>;
-  velocity: React.MutableRefObject<number>;
+  cameraProgress: React.MutableRefObject<number>;
   reducedMotion: boolean;
 }) {
   const smoothPos = useRef(new THREE.Vector3(...getCameraPosition(PLANETS[0])));
 
   useFrame((state, delta) => {
-    if (!reducedMotion) {
-      flightProgressRef.current = THREE.MathUtils.clamp(
-        flightProgressRef.current + velocityRef.current * delta,
-        0,
-        MAX_PROGRESS
-      );
-      // Exponential decay so wheel/touch input coasts to a smooth stop.
-      velocityRef.current *= Math.pow(0.0009, delta);
-    }
-
+    // flightProgress is driven entirely by gsap tweens in SolarExperience
+    // (one whole planet index at a time), not per-frame velocity — so it
+    // just needs clamping here, no integration.
     const progress = reducedMotion ? 0 : flightProgressRef.current;
     const clamped = THREE.MathUtils.clamp(progress, 0, MAX_PROGRESS);
     const lo = Math.floor(clamped);
@@ -41,6 +34,13 @@ export default function CameraRig({
 
     const damp = Math.min(1, delta * (reducedMotion ? 10 : 2.2));
     smoothPos.current.lerp(target, damp);
+    // Track "nearest planet" off this same damped progress, not the raw
+    // scroll target above, so a panel only becomes active once the camera
+    // has actually caught up to it visually. Otherwise fast scroll/fling
+    // marks the next panel active while the camera (and thus its on-screen
+    // projection) is still mid-flight from the previous one, shoving it off
+    // to the side of the viewport instead of centered.
+    cameraProgressRef.current = THREE.MathUtils.lerp(cameraProgressRef.current, clamped, damp);
 
     state.camera.position.copy(smoothPos.current);
     // Always look back at the sun so it stays in frame at every stop.
