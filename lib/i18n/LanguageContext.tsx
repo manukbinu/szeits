@@ -7,14 +7,17 @@ import { ar } from "./ar";
 
 const dictionaries: Record<Locale, Dictionary> = { en, ar };
 
-type LanguageContextValue = {
+export type LanguageContextValue = {
   locale: Locale;
   dir: "ltr" | "rtl";
   t: Dictionary;
   toggleLocale: () => void;
 };
 
-const LanguageContext = createContext<LanguageContextValue | null>(null);
+// Exported (not just the hook) so it can be re-provided across React Three
+// Fiber's <Canvas> boundary, which runs a separate reconciler that doesn't
+// automatically inherit context from the outer DOM tree — see SolarScene.tsx.
+export const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 function applyDocumentLocale(locale: Locale) {
   document.documentElement.lang = locale;

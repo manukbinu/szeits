@@ -2,15 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Cairo } from "next/font/google";
 import { MotionConfig } from "framer-motion";
 import "./globals.css";
-import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import Preloader from "@/components/Preloader";
-import ScrollProgress from "@/components/ScrollProgress";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton";
-import BackToTop from "@/components/BackToTop";
-import LogoScrollBackdropLoader from "@/components/three/LogoScrollBackdropLoader";
 import { siteConfig } from "@/lib/constants";
 import { en } from "@/lib/i18n/en";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
@@ -97,17 +90,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col text-foreground overflow-x-hidden">
         <LanguageProvider>
           <MotionConfig reducedMotion="user">
-            <LogoScrollBackdropLoader />
             <Preloader />
-            <SmoothScroll>
-              <CustomCursor />
-              <ScrollProgress />
-              <Navbar />
-              {children}
-              <Footer />
-              <WhatsAppButton />
-              <BackToTop />
-            </SmoothScroll>
+            <CustomCursor />
+            {children}
           </MotionConfig>
         </LanguageProvider>
       </body>

@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f7f9;
+  --background: #ffffff;
   --foreground: #0f172a;
   --muted: #64748b;
-  --brand-blue: #1f7ce0;
-  --brand-green: #24c29a;
-  --brand-lime: #8fb832;
+  --brand-blue: #2563eb;
+  --brand-green: #06b6d4;
+  --brand-lime: #06b6d4;
   --surface: #ffffff;
   --border: #e2e8f0;
   --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
@@ -16,16 +16,16 @@
 }
 
 .dark {
-  --background: #0d0e13;
+  --background: #0f172a;
   --foreground: #f3f4f6;
   --muted: #94a3b8;
-  --brand-lime: #b7db3b;
-  --surface: #15171e;
+  --brand-lime: #22d3ee;
+  --surface: #15192b;
   --border: rgba(255, 255, 255, 0.08);
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-soft-hover: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 32px rgba(0, 0, 0, 0.4);
   --nav-hover: rgba(255, 255, 255, 0.06);
-  --pressed-bg: #1c1f27;
+  --pressed-bg: #1a2035;
 }
 
 @theme inline {
@@ -69,34 +69,18 @@ h3,
 }
 
 .text-gradient {
-  background: linear-gradient(
-    100deg,
-    var(--brand-blue) 0%,
-    var(--brand-green) 50%,
-    var(--brand-lime) 100%
-  );
+  background: linear-gradient(100deg, var(--brand-blue) 0%, var(--brand-green) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
 
 .bg-gradient-brand {
-  background: linear-gradient(
-    100deg,
-    var(--brand-blue) 0%,
-    var(--brand-green) 50%,
-    var(--brand-lime) 100%
-  );
+  background: linear-gradient(100deg, var(--brand-blue) 0%, var(--brand-green) 100%);
 }
 
 .border-gradient-brand {
-  border-image: linear-gradient(
-      100deg,
-      var(--brand-blue),
-      var(--brand-green),
-      var(--brand-lime)
-    )
-    1;
+  border-image: linear-gradient(100deg, var(--brand-blue), var(--brand-green)) 1;
 }
 
 @keyframes marquee {

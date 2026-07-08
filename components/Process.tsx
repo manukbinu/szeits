@@ -9,9 +9,20 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { prefersReducedMotion } from "@/lib/useReducedMotion";
 import { useTilt } from "@/lib/useTilt";
 import StaggerHeading from "@/components/StaggerHeading";
+import ChapterTag from "@/components/ChapterTag";
 import type { ProcessStep } from "@/lib/i18n/types";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// The solar-system experience renders this section inside a fixed,
+// non-scrolling panel — there's no real page scroll left for ScrollTrigger's
+// pin+scrub to hook into there, and pinning anyway just reserves a huge
+// unused spacer. Skip the scroll-driven reveal (cards show at their default
+// visible state) whenever the document itself isn't actually scrollable.
+function hasScrollableDocument() {
+  if (typeof document === "undefined") return true;
+  return document.documentElement.scrollHeight > document.documentElement.clientHeight + 4;
+}
 
 const tileSpans = [
   "lg:col-span-2 lg:row-span-1",
@@ -45,12 +56,12 @@ function ProcessCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={tilt.onMouseLeave}
         style={tilt.style}
-        className="neu-raised spotlight-card flex h-full flex-col justify-between rounded-3xl p-10"
+        className="neu-raised spotlight-card flex h-full flex-col justify-between rounded-2xl p-3 sm:rounded-3xl sm:p-4"
       >
-        <span className="font-display text-6xl font-bold text-gradient">{step.number}</span>
+        <span className="font-display text-lg font-bold text-gradient sm:text-2xl">{step.number}</span>
         <div>
-          <h3 className="font-display text-2xl font-semibold">{step.title}</h3>
-          <p className="mt-3 text-muted">{step.description}</p>
+          <h3 className="font-display text-xs font-semibold sm:text-base">{step.title}</h3>
+          <p className="mt-1 line-clamp-2 text-[11px] text-muted sm:line-clamp-none sm:text-xs">{step.description}</p>
         </div>
       </motion.div>
     </div>
@@ -65,7 +76,7 @@ export default function Process() {
 
   useGSAP(
     () => {
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion() || !hasScrollableDocument()) return;
       const cards = cardsRef.current.filter((el): el is HTMLDivElement => !!el);
       if (!cards.length) return;
 
@@ -113,20 +124,21 @@ export default function Process() {
   );
 
   return (
-    <section id="process" ref={sectionRef} className="relative overflow-hidden py-32">
-      <div className="mx-auto mb-16 max-w-7xl px-6 lg:px-10">
-        <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
+    <section id="process" ref={sectionRef} className="relative overflow-hidden py-6 sm:py-10 lg:py-12">
+      <div className="mx-auto mb-4 max-w-7xl px-6 sm:mb-6 lg:mb-8 lg:px-10">
+        <p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:mb-4">
+          <ChapterTag number="02" />
           {t.process.eyebrow}
         </p>
         <StaggerHeading
           before={t.process.headingBefore}
           highlight={t.process.headingHighlight}
-          className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
+          className="text-xl font-bold leading-tight tracking-tight sm:text-2xl lg:text-3xl"
         />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="relative grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense">
+        <div className="relative grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-flow-dense">
           {t.process.steps.map((step, i) => (
             <ProcessCard
               key={step.number}

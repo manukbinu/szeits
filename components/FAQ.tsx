@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import StaggerHeading from "@/components/StaggerHeading";
+import ChapterTag from "@/components/ChapterTag";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -26,7 +27,7 @@ function FAQItem({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-4 px-6 py-5 text-start"
+        className="flex w-full items-center gap-3 px-5 py-3 text-start"
         aria-expanded={open}
       >
         <span className="neu-chip flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
@@ -40,7 +41,7 @@ function FAQItem({
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 9a2.5 2.5 0 1 1 3.4 2.33c-.66.26-1.4.8-1.4 1.67v.5M12 17h.01" />
           </svg>
         </span>
-        <span className="flex-1 font-display text-lg font-semibold">{question}</span>
+        <span className="flex-1 font-display text-sm font-semibold">{question}</span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.2 }}
@@ -58,7 +59,7 @@ function FAQItem({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="px-6 pb-6 ps-[4.75rem] text-muted">{answer}</p>
+            <p className="px-6 pb-4 ps-[4.75rem] text-xs text-muted">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -71,22 +72,23 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative py-32">
+    <section id="faq" className="relative py-12">
       <div className="mx-auto max-w-4xl px-6 lg:px-10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.4 }}
           variants={fadeUp}
-          className="mb-16 text-center"
+          className="mb-8 text-center"
         >
-          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
+          <p className="mb-4 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.2em] text-muted">
+            <ChapterTag number="04" />
             {t.faq.eyebrow}
           </p>
           <StaggerHeading
             before={t.faq.headingBefore}
             highlight={t.faq.headingHighlight}
-            className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl"
+            className="text-2xl font-bold leading-tight tracking-tight sm:text-3xl"
           />
         </motion.div>
 
@@ -95,7 +97,7 @@ export default function FAQ() {
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
-          className="space-y-4"
+          className="space-y-2.5"
         >
           {t.faq.items.map((item, i) => (
             <FAQItem

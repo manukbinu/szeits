@@ -6,6 +6,7 @@ import { siteConfig } from "@/lib/constants";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import Magnetic from "@/components/Magnetic";
 import StaggerHeading from "@/components/StaggerHeading";
+import ChapterTag from "@/components/ChapterTag";
 
 const FORMSPREE_ID = process.env.NEXT_PUBLIC_FORMSPREE_ID;
 
@@ -57,39 +58,40 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative py-32">
+    <section id="contact" className="relative py-6 sm:py-10 lg:py-12">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.4 }}
           variants={fadeUp}
-          className="mb-16 text-center"
+          className="mb-4 text-center sm:mb-6 lg:mb-8"
         >
-          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted">
+          <p className="mb-2 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:mb-4">
+            <ChapterTag number="05" />
             {t.contact.eyebrow}
           </p>
           <StaggerHeading
             before={t.contact.headingBefore}
             highlight={t.contact.headingHighlight}
-            className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl"
+            className="text-xl font-bold leading-tight tracking-tight sm:text-2xl lg:text-3xl"
           />
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:grid-flow-dense">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-flow-dense">
           <motion.div
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.4 }}
             variants={fadeUp}
-            className="neu-chip flex flex-col justify-center rounded-2xl px-5 py-4 lg:col-span-1"
+            className="neu-chip flex flex-col justify-center rounded-2xl px-3 py-2 sm:px-5 sm:py-3 lg:col-span-1"
           >
             <p className="text-xs uppercase tracking-[0.15em] text-muted">
               {t.contact.emailLabel}
             </p>
             <a
               href={`mailto:${siteConfig.email}`}
-              className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
+              className="mt-1 block truncate font-display text-xs font-semibold hover:text-gradient sm:text-sm"
             >
               {siteConfig.email}
             </a>
@@ -100,14 +102,14 @@ export default function Contact() {
             whileInView="show"
             viewport={{ once: true, amount: 0.4 }}
             variants={fadeUp}
-            className="neu-chip flex flex-col justify-center rounded-2xl px-5 py-4 lg:col-span-1"
+            className="neu-chip flex flex-col justify-center rounded-2xl px-3 py-2 sm:px-5 sm:py-3 lg:col-span-1"
           >
             <p className="text-xs uppercase tracking-[0.15em] text-muted">
               {t.contact.phoneLabel}
             </p>
             <a
               href={`tel:${siteConfig.phoneHref}`}
-              className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
+              className="mt-1 block truncate font-display text-xs font-semibold hover:text-gradient sm:text-sm"
             >
               {siteConfig.phone}
             </a>
@@ -118,7 +120,7 @@ export default function Contact() {
             whileInView="show"
             viewport={{ once: true, amount: 0.4 }}
             variants={fadeUp}
-            className="neu-chip flex flex-col justify-center rounded-2xl px-5 py-4 lg:col-span-2"
+            className="neu-chip col-span-2 flex flex-col justify-center rounded-2xl px-3 py-2 sm:px-5 sm:py-3 lg:col-span-2"
           >
             <p className="text-xs uppercase tracking-[0.15em] text-muted">
               {t.contact.locationLabel}
@@ -127,7 +129,7 @@ export default function Contact() {
               href={siteConfig.mapLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-1 block font-display text-xl font-semibold hover:text-gradient"
+              className="mt-1 block truncate font-display text-xs font-semibold hover:text-gradient sm:text-sm"
             >
               {t.siteConfig.location}
             </a>
@@ -139,16 +141,16 @@ export default function Contact() {
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
             onSubmit={handleSubmit}
-            className="space-y-5 lg:col-span-2 lg:row-span-2"
+            className="col-span-2 space-y-2 sm:space-y-3 lg:col-span-2 lg:row-span-2"
           >
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2 sm:gap-3">
               <input
                 required
                 name="name"
                 value={form.name}
                 onChange={handleChange}
                 placeholder={t.contact.namePlaceholder}
-                className="neu-pressed rounded-xl px-5 py-4 text-sm outline-none placeholder:text-muted"
+                className="neu-pressed rounded-xl px-4 py-2 text-xs outline-none placeholder:text-muted sm:px-5 sm:py-3 sm:text-sm"
               />
               <input
                 required
@@ -157,7 +159,7 @@ export default function Contact() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder={t.contact.emailPlaceholder}
-                className="neu-pressed rounded-xl px-5 py-4 text-sm outline-none placeholder:text-muted"
+                className="neu-pressed rounded-xl px-4 py-2 text-xs outline-none placeholder:text-muted sm:px-5 sm:py-3 sm:text-sm"
               />
             </div>
             <textarea
@@ -166,23 +168,23 @@ export default function Contact() {
               value={form.message}
               onChange={handleChange}
               placeholder={t.contact.messagePlaceholder}
-              rows={5}
-              className="neu-pressed w-full rounded-xl px-5 py-4 text-sm outline-none placeholder:text-muted"
+              rows={2}
+              className="neu-pressed w-full rounded-xl px-4 py-2 text-xs outline-none placeholder:text-muted sm:px-5 sm:py-3 sm:text-sm"
             />
             <Magnetic>
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="btn-primary shine bg-gradient-brand rounded-full px-7 py-3.5 text-sm font-semibold disabled:opacity-60"
+                className="btn-primary shine bg-gradient-brand rounded-full px-5 py-2 text-xs font-semibold disabled:opacity-60 sm:px-6 sm:py-2.5 sm:text-sm"
               >
                 {status === "sending" ? t.contact.sendingButton : t.contact.sendButton}
               </button>
             </Magnetic>
             {status === "success" && (
-              <p className="text-sm text-brand-green">{t.contact.successMessage}</p>
+              <p className="text-xs text-brand-green sm:text-sm">{t.contact.successMessage}</p>
             )}
             {status === "error" && (
-              <p className="text-sm text-red-400">{t.contact.errorMessage}</p>
+              <p className="text-xs text-red-400 sm:text-sm">{t.contact.errorMessage}</p>
             )}
           </motion.form>
 
@@ -191,17 +193,17 @@ export default function Contact() {
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
             variants={fadeUp}
-            className="neu-raised overflow-hidden rounded-2xl p-2 lg:col-span-2"
+            className="neu-raised col-span-2 overflow-hidden rounded-2xl p-2 lg:col-span-2"
           >
             <iframe
               src={siteConfig.mapEmbedSrc}
               width="100%"
               height="100%"
-              style={{ border: 0, minHeight: 260 }}
+              style={{ border: 0 }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title={`${siteConfig.name} location on Google Maps`}
-              className="rounded-xl"
+              className="min-h-[70px] rounded-xl sm:min-h-[120px]"
             />
           </motion.div>
         </div>
