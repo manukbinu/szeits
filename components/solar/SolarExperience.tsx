@@ -50,7 +50,7 @@ export default function SolarExperience({
     gsap.killTweensOf(flightProgress);
     gsap.to(flightProgress, {
       current: next,
-      duration: 0.8,
+      duration: 2,
       ease: "power2.inOut",
       onComplete: () => {
         if (pendingDirection.current !== 0) {
@@ -166,7 +166,7 @@ export default function SolarExperience({
     gsap.killTweensOf(flightProgress);
     gsap.to(flightProgress, {
       current: index,
-      duration: 0.9,
+      duration: 1.5,
       ease: "power2.inOut",
       onComplete: () => {
         isAnimating.current = false;
