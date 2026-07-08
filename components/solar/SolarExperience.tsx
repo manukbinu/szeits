@@ -80,7 +80,7 @@ export default function SolarExperience({
   // real page to scroll — same interception pattern the old SmoothScroll
   // component used for Lenis, just repointed at jumpTo.
   useEffect(() => {
-    const idToIndex = new Map(PLANETS.map((p, i) => [p.id, i]));
+    const idToIndex = new Map<string, number>(PLANETS.map((p, i) => [p.id, i]));
     const onClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest('a[href^="#"]');
       if (!target) return;
