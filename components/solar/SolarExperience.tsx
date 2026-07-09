@@ -36,7 +36,7 @@ export default function SolarExperience({
   // without ever becoming active.
   const currentIndex = useRef(0);
   const isAnimating = useRef(false);
-  const pendingDirection = useRef(0);
+  const pendingDirection = useRef<1 | -1 | 0>(0);
 
   const advance = (direction: 1 | -1) => {
     if (isAnimating.current) {
