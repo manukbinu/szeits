@@ -1,0 +1,325 @@
+
+# =============================================================================
+# CI/CD Pipeline - Static Site -> Nginx (Ubuntu) over SSH
+# =============================================================================
+# Stages:
+#   1. build   - install deps, build production bundle, upload artifact
+#   2. test    - lint + test suite (uses the same build artifact)
+#   3. deploy  - SSH to server, atomic release swap, backup, verify, rollback
+#
+# Deploy only runs on a push to `master`. Pull requests only run build + test.
+# Any job failure -> email to the dev team. Successful deploy -> email client.
+# =============================================================================
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# -----------------------------------------------------------------------------
+# Global environment variables available to every job.
+# Keep non-secret, non-sensitive config here so it's easy to tweak in one place.
+# -----------------------------------------------------------------------------
+env:
+  NODE_VERSION: "20"
+  BUILD_DIR: "out"                 # Next.js static export output folder
+  ARTIFACT_NAME: "site-build"
+  RELEASES_TO_KEEP: "5"            # how many previous releases to retain on the server
+
+permissions:
+  contents: read
+
+jobs:
+  # ===========================================================================
+  # STAGE 1: BUILD
+  # ===========================================================================
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Cancel superseded builds on the same branch, but never touch a running deploy.
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (with built-in npm cache)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"                     # caches ~/.npm based on package-lock.json hash
+
+      # Belt-and-braces explicit cache for node_modules itself. setup-node's
+      # cache above speeds up `npm ci` downloads; this step additionally
+      # short-circuits install entirely when the lockfile hasn't changed.
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefer-offline --no-audit --progress=false
+
+      - name: Run production build
+        run: |
+          echo "::group::Building production bundle"
+          npm run build
+          echo "::endgroup::"
+        env:
+          CI: "true"
+          NODE_ENV: production
+
+      - name: Verify build output exists
+        run: |
+          if [ ! -d "${{ env.BUILD_DIR }}" ]; then
+            echo "::error::Build directory '${{ env.BUILD_DIR }}' was not created. Failing the job."
+            exit 1
+          fi
+          echo "Build output found in ${{ env.BUILD_DIR }}/"
+          ls -la "${{ env.BUILD_DIR }}"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.BUILD_DIR }}
+          retention-days: 7
+          if-no-files-found: error
+
+  # ===========================================================================
+  # STAGE 2: TEST  (depends on: build)
+  # ===========================================================================
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: test-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (with built-in npm cache)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --progress=false
+
+      # Pulled down mainly so tests that verify build output (e.g. broken-link
+      # checks, HTML validation) have something to check against.
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.BUILD_DIR }}
+
+      - name: Run linter
+        run: |
+          echo "::group::Linting"
+          npm run lint --if-present
+          echo "::endgroup::"
+
+      # --------------------------------------------------------------------
+      # Real test suite. If your project has no tests configured yet, this
+      # `--if-present` guard prevents the whole pipeline from failing on a
+      # missing "test" script. Replace the placeholder block below with your
+      # actual test runner (jest, vitest, playwright, etc.) as soon as you
+      # have one.
+      # --------------------------------------------------------------------
+      - name: Run test suite
+        run: |
+          echo "::group::Running tests"
+          if npm run | grep -q " test$\| test "; then
+            npm test --if-present
+          else
+            echo "No 'test' script found in package.json."
+            echo "PLACEHOLDER: add a real test script (e.g. 'vitest run' or 'jest --ci')"
+            echo "and remove this placeholder block once tests exist."
+          fi
+          echo "::endgroup::"
+
+  # ===========================================================================
+  # STAGE 3: DEPLOY  (depends on: build, test) - master branch pushes only
+  # ===========================================================================
+  deploy:
+    name: Deploy to Production
+    needs: [build, test]
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    # Only ever one deployment in flight at a time. Do NOT cancel-in-progress:
+    # cancelling a live deploy mid-way could leave the server in a broken state.
+    concurrency:
+      group: production-deployment
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.BUILD_DIR }}
+
+      - name: Package build into a tarball
+        run: |
+          tar -czf release.tar.gz -C "${{ env.BUILD_DIR }}" .
+          ls -lh release.tar.gz
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      # SSH/network blips happen. Retry the connectivity check a few times
+      # before we commit to the actual deployment steps.
+      - name: Verify SSH connectivity (with retry)
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 2
+          max_attempts: 5
+          retry_wait_seconds: 10
+          command: |
+            ssh -o BatchMode=yes -o ConnectTimeout=10 \
+              "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "echo connected"
+
+      - name: Upload deploy & rollback scripts
+        run: |
+          scp -o StrictHostKeyChecking=yes ./scripts/deploy.sh ./scripts/rollback.sh \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/"
+
+      - name: Upload release artifact
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 15
+          command: |
+            scp -o StrictHostKeyChecking=yes ./release.tar.gz \
+              "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/release.tar.gz"
+
+      - name: Run remote deployment
+        id: remote_deploy
+        run: |
+          ssh -o StrictHostKeyChecking=yes "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "chmod +x /tmp/deploy.sh /tmp/rollback.sh && \
+             sudo -n /tmp/deploy.sh \
+               '${{ secrets.SERVER_PATH }}' \
+               '/tmp/release.tar.gz' \
+               '${{ github.sha }}' \
+               '${{ env.RELEASES_TO_KEEP }}'"
+
+      # If the deploy step above failed, roll back automatically before we
+      # let the job fail (so the failure email reflects a *handled* rollback,
+      # not a site left broken in production).
+      - name: Roll back on failure
+        if: failure() && steps.remote_deploy.outcome == 'failure'
+        run: |
+          echo "::warning::Deployment failed. Triggering automatic rollback."
+          ssh -o StrictHostKeyChecking=yes "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "sudo -n /tmp/rollback.sh '${{ secrets.SERVER_PATH }}'"
+
+      - name: Verify deployment (HTTP check)
+        run: |
+          ssh -o StrictHostKeyChecking=yes "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "curl -fsS -o /dev/null -w '%{http_code}' http://localhost/ | grep -q '200'"
+
+      - name: Send success email to client
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "Application Successfully Updated"
+          to: ${{ secrets.CLIENT_EMAIL }}
+          from: "CI/CD Pipeline <${{ secrets.SMTP_USERNAME }}>"
+          body: |
+            Hello,
+
+            A new version of the application has been successfully deployed.
+
+            Deployment Details:
+            - Repository: ${{ github.repository }}
+            - Branch: ${{ github.ref_name }}
+            - Commit ID: ${{ github.sha }}
+            - Deployment Time: ${{ github.event.head_commit.timestamp }}
+            - Environment: Production
+
+            The application is now running the latest version.
+
+            Regards,
+            CI/CD Pipeline
+
+  # ===========================================================================
+  # NOTIFY: FAILURE  (runs if build, test, or deploy failed)
+  # ===========================================================================
+  notify-failure:
+    name: Notify Dev Team on Failure
+    needs: [build, test, deploy]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Determine failed stage
+        id: failed_stage
+        run: |
+          if [ "${{ needs.build.result }}" == "failure" ]; then
+            echo "stage=Build" >> "$GITHUB_OUTPUT"
+          elif [ "${{ needs.test.result }}" == "failure" ]; then
+            echo "stage=Test" >> "$GITHUB_OUTPUT"
+          else
+            echo "stage=Deploy" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Send failure email to dev team
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "[CI/CD FAILURE] ${{ github.repository }} - ${{ steps.failed_stage.outputs.stage }} stage failed"
+          to: ${{ secrets.DEV_EMAIL }}
+          from: "CI/CD Pipeline <${{ secrets.SMTP_USERNAME }}>"
+          body: |
+            The CI/CD pipeline failed.
+
+            Repository:      ${{ github.repository }}
+            Branch:           ${{ github.ref_name }}
+            Commit SHA:       ${{ github.sha }}
+            Commit Message:   ${{ github.event.head_commit.message }}
+            Failed Stage:     ${{ steps.failed_stage.outputs.stage }}
+            Triggered By:     ${{ github.actor }}
+            Workflow URL:     ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Please check the workflow logs at the URL above for full error details.
+
+            Regards,
+            CI/CD Pipeline
