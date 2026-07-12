@@ -15,6 +15,7 @@ warn() { echo -e "${YELLOW}[rollback][warn]${NC} $*"; }
 err()  { echo -e "${RED}[rollback][error]${NC} $*" >&2; }
 
 SERVER_PATH="${1:?SERVER_PATH argument required}"
+SITE_DOMAIN="${2:?SITE_DOMAIN argument required}"
 RELEASES_DIR="${SERVER_PATH}/releases"
 CURRENT_LINK="${SERVER_PATH}/current"
 
@@ -67,7 +68,7 @@ log "Reloading Nginx"
 systemctl reload nginx
 
 sleep 1
-HTTP_CODE="$(curl -fsS -o /dev/null -w '%{http_code}' http://localhost/ || echo "000")"
+HTTP_CODE="$(curl -sS -o /dev/null -w '%{http_code}' --resolve "${SITE_DOMAIN}:443:127.0.0.1" "https://${SITE_DOMAIN}/" 2>/dev/null || echo "000")"
 if [ "${HTTP_CODE}" != "200" ]; then
   err "Site still unhealthy after rollback (HTTP ${HTTP_CODE}). Manual intervention required."
   exit 1

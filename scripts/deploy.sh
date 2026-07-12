@@ -31,6 +31,12 @@ SERVER_PATH="${1:?SERVER_PATH argument required}"
 TARBALL_PATH="${2:?TARBALL_PATH argument required}"
 COMMIT_SHA="${3:?COMMIT_SHA argument required}"
 RELEASES_TO_KEEP="${4:-5}"
+SITE_DOMAIN="${5:?SITE_DOMAIN argument required}"
+
+# Health checks below use --resolve to pin SITE_DOMAIN to 127.0.0.1 for both
+# TLS SNI and the Host header, matching name-based vhosts (server_name) in
+# Nginx. A bare `curl http://localhost/` would send Host: localhost, which
+# doesn't match a server_name block and can return a misleading 404.
 
 RELEASES_DIR="${SERVER_PATH}/releases"
 CURRENT_LINK="${SERVER_PATH}/current"
@@ -107,7 +113,7 @@ systemctl reload nginx
 
 # --- Local smoke test before declaring success -------------------------------
 sleep 1
-HTTP_CODE="$(curl -fsS -o /dev/null -w '%{http_code}' http://localhost/ || echo "000")"
+HTTP_CODE="$(curl -sS -o /dev/null -w '%{http_code}' --resolve "${SITE_DOMAIN}:443:127.0.0.1" "https://${SITE_DOMAIN}/" 2>/dev/null || echo "000")"
 if [ "${HTTP_CODE}" != "200" ]; then
   err "Post-deploy health check failed (HTTP ${HTTP_CODE}). Rolling back."
   if [ -n "${PREVIOUS_RELEASE}" ]; then

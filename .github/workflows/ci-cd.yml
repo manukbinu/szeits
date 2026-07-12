@@ -28,6 +28,7 @@ env:
   BUILD_DIR: "out"                 # Next.js static export output folder
   ARTIFACT_NAME: "site-build"
   RELEASES_TO_KEEP: "5"            # how many previous releases to retain on the server
+  SITE_DOMAIN: "szeits.com"        # used for name-based vhost health checks
 
 permissions:
   contents: read
@@ -227,6 +228,15 @@ jobs:
             scp -o StrictHostKeyChecking=yes ./release.tar.gz \
               "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/release.tar.gz"
 
+      # deploy.sh performs its OWN internal rollback (same SSH session, same
+      # symlink-flip logic) if its post-deploy health check fails, and exits
+      # non-zero afterward so this step - and the job - still shows failed.
+      # We deliberately do NOT run rollback.sh again from the workflow here:
+      # doing so previously caused a race where the outer rollback would
+      # re-target the just-failed release instead of the known-good one,
+      # undoing deploy.sh's already-correct self-heal. If you ever need a
+      # rollback outside of a failed deploy (e.g. a bad release discovered
+      # after the fact), run rollback.sh manually or via a separate workflow.
       - name: Run remote deployment
         id: remote_deploy
         run: |
@@ -236,22 +246,13 @@ jobs:
                '${{ secrets.SERVER_PATH }}' \
                '/tmp/release.tar.gz' \
                '${{ github.sha }}' \
-               '${{ env.RELEASES_TO_KEEP }}'"
-
-      # If the deploy step above failed, roll back automatically before we
-      # let the job fail (so the failure email reflects a *handled* rollback,
-      # not a site left broken in production).
-      - name: Roll back on failure
-        if: failure() && steps.remote_deploy.outcome == 'failure'
-        run: |
-          echo "::warning::Deployment failed. Triggering automatic rollback."
-          ssh -o StrictHostKeyChecking=yes "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-            "sudo -n /tmp/rollback.sh '${{ secrets.SERVER_PATH }}'"
+               '${{ env.RELEASES_TO_KEEP }}' \
+               '${{ env.SITE_DOMAIN }}'"
 
       - name: Verify deployment (HTTP check)
         run: |
           ssh -o StrictHostKeyChecking=yes "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-            "curl -fsS -o /dev/null -w '%{http_code}' http://localhost/ | grep -q '200'"
+            "curl -sS -o /dev/null -w '%{http_code}' --resolve '${{ env.SITE_DOMAIN }}:443:127.0.0.1' 'https://${{ env.SITE_DOMAIN }}/' | grep -q '200'"
 
       - name: Send success email to client
         if: success()
