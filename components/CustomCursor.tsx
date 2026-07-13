@@ -54,18 +54,18 @@ export default function CustomCursor() {
     <div ref={containerRef} className={enabled ? "" : "hidden"}>
       <div
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-lime"
-        style={{ boxShadow: "0 0 12px 2px rgba(6,182,212,0.7)" }}
+        className="pointer-events-none fixed left-0 top-0 z-[9999] h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold"
+        style={{ boxShadow: "0 0 12px 2px rgba(163,230,53,0.6)" }}
       />
       <div
         ref={ringRef}
         className={`pointer-events-none fixed left-0 top-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-[width,height,opacity,border-color,box-shadow] duration-200 ${
-          hovering ? "h-14 w-14 border-brand-blue opacity-100" : "h-8 w-8 border-brand-green opacity-60"
+          hovering ? "h-14 w-14 border-accent opacity-100" : "h-8 w-8 border-accent-2 opacity-60"
         }`}
         style={{
           boxShadow: hovering
-            ? "0 0 26px 4px rgba(37,99,235,0.35)"
-            : "0 0 14px 2px rgba(6,182,212,0.2)",
+            ? "0 0 26px 4px rgba(45,212,191,0.35)"
+            : "0 0 14px 2px rgba(45,212,191,0.2)",
         }}
       />
     </div>

@@ -10,7 +10,7 @@ export default function LanguageToggle({ className = "" }: { className?: string 
       type="button"
       onClick={toggleLocale}
       aria-label={t.aria.languageToggle}
-      className={`neu-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xs font-semibold uppercase ${className}`}
+      className={`btn-ghost flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xs font-semibold uppercase ${className}`}
     >
       {locale === "en" ? "عربي" : "EN"}
     </button>

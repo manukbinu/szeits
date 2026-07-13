@@ -7,27 +7,27 @@ type Line = Token[];
 
 const codeLines: Line[] = [
   [
-    { text: "const ", color: "var(--brand-blue)" },
-    { text: "szeits", color: "var(--brand-green)" },
+    { text: "const ", color: "var(--accent-2)" },
+    { text: "szeits", color: "var(--gold)" },
     { text: " = {" },
   ],
   [
     { text: "  builds" },
     { text: ": " },
-    { text: '["web", "mobile", "AI", "cloud"]', color: "var(--brand-lime)" },
+    { text: '["web", "mobile", "AI", "cloud"]', color: "var(--gold)" },
     { text: "," },
   ],
   [
     { text: "  based" },
     { text: ": " },
-    { text: '"Dubai, UAE"', color: "var(--brand-lime)" },
+    { text: '"Dubai, UAE"', color: "var(--gold)" },
     { text: "," },
   ],
   [
     { text: "  mission" },
     { text: ": " },
-    { text: "() => ", color: "var(--brand-blue)" },
-    { text: '"ship products that scale"', color: "var(--brand-lime)" },
+    { text: "() => ", color: "var(--accent-2)" },
+    { text: '"ship products that scale"', color: "var(--gold)" },
   ],
   [{ text: "};" }],
   [{ text: "// engineered for what's next", color: "var(--muted)" }],
@@ -91,7 +91,7 @@ export default function TerminalWindow() {
           <span className="mr-4 w-4 shrink-0 select-none" style={{ color: "rgba(156,163,175,0.4)" }}>
             {codeLines.length + 1}
           </span>
-          <span className="inline-block h-4 w-2 animate-blink bg-brand-lime" />
+          <span className="inline-block h-4 w-2 animate-blink bg-gold" />
         </motion.div>
       </motion.div>
     </div>

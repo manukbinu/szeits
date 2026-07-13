@@ -3,7 +3,7 @@ import { Inter, Space_Grotesk, Cairo } from "next/font/google";
 import { MotionConfig } from "framer-motion";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
-import Preloader from "@/components/Preloader";
+import IntroGate from "@/components/IntroGate";
 import { siteConfig } from "@/lib/constants";
 import { en } from "@/lib/i18n/en";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
@@ -90,7 +90,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col text-foreground overflow-x-hidden">
         <LanguageProvider>
           <MotionConfig reducedMotion="user">
-            <Preloader />
+            <IntroGate />
             <CustomCursor />
             {children}
           </MotionConfig>

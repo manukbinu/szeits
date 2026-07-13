@@ -55,13 +55,7 @@ const tileSpans = [
   "lg:col-span-1 lg:row-span-1",
 ];
 
-function ServiceCard({
-  service,
-  span,
-}: {
-  service: ServiceItem;
-  span: string;
-}) {
+function ServiceCard({ service, span }: { service: ServiceItem; span: string }) {
   const tilt = useTilt(6);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -77,27 +71,27 @@ function ServiceCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={tilt.onMouseLeave}
         style={tilt.style}
-        className="neu-card spotlight-card flex h-full flex-col justify-center rounded-2xl p-3 sm:rounded-3xl sm:p-5"
+        className="glass spotlight-card flex h-full flex-col justify-center rounded-2xl p-5 sm:rounded-3xl sm:p-8"
       >
-        <div className="neu-chip flex h-9 w-9 items-center justify-center rounded-xl sm:h-12 sm:w-12 sm:rounded-2xl">
+        <div className="glass flex h-11 w-11 items-center justify-center rounded-xl sm:h-14 sm:w-14 sm:rounded-2xl">
           <svg
             viewBox="0 0 24 24"
             fill="none"
             stroke="url(#svcGradient)"
             strokeWidth="1.5"
-            className="h-4 w-4 sm:h-6 sm:w-6"
+            className="h-5 w-5 sm:h-7 sm:w-7"
           >
             <defs>
               <linearGradient id="svcGradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--brand-blue)" />
-                <stop offset="100%" stopColor="var(--brand-lime)" />
+                <stop offset="0%" stopColor="var(--accent)" />
+                <stop offset="100%" stopColor="var(--gold)" />
               </linearGradient>
             </defs>
             {icons[service.icon]}
           </svg>
         </div>
-        <h3 className="mt-2 font-display text-xs font-semibold sm:text-base">{service.title}</h3>
-        <p className="mt-1 line-clamp-3 text-[11px] text-muted sm:line-clamp-none sm:text-xs">{service.description}</p>
+        <h3 className="mt-4 font-display text-lg font-semibold sm:text-2xl">{service.title}</h3>
+        <p className="mt-2 text-sm text-muted sm:text-base">{service.description}</p>
       </motion.div>
     </motion.div>
   );
@@ -107,17 +101,17 @@ export default function Services() {
   const { t } = useLanguage();
 
   return (
-    <section id="services" className="relative py-6 sm:py-10 lg:py-12">
+    <section id="services" className="relative py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="mb-4 max-w-2xl sm:mb-6 lg:mb-8">
-          <p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:mb-4">
+        <div className="mb-10 max-w-2xl sm:mb-14 lg:mb-16">
+          <p className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:mb-4">
             <ChapterTag number="01" />
             {t.services.eyebrow}
           </p>
           <StaggerHeading
             before={t.services.headingBefore}
             highlight={t.services.headingHighlight}
-            className="text-xl font-bold leading-tight tracking-tight sm:text-2xl lg:text-3xl"
+            className="text-display-md font-bold tracking-tight"
           />
         </div>
 
@@ -126,7 +120,7 @@ export default function Services() {
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
           variants={container}
-          className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-flow-dense"
+          className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:grid-flow-dense"
         >
           {t.services.items.map((service, i) => (
             <ServiceCard key={i} service={service} span={tileSpans[i]} />

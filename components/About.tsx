@@ -19,8 +19,9 @@ export default function About() {
   const { t } = useLanguage();
 
   return (
-    <section id="about" className="relative py-12">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+    <section id="about" className="relative py-20 sm:py-28 lg:py-32">
+      <div className="glow-orb pointer-events-none absolute top-0 start-1/4 h-72 w-72 rounded-full bg-accent/20" />
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -30,7 +31,7 @@ export default function About() {
         >
           <motion.div
             variants={tileVariant}
-            className="neu-raised rounded-3xl p-6 lg:col-span-2 lg:row-span-2"
+            className="glass-strong rounded-3xl p-6 sm:p-8 lg:col-span-2 lg:row-span-2"
           >
             <p className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted">
               <ChapterTag number="03" />
@@ -40,28 +41,28 @@ export default function About() {
               before={t.about.headingBefore}
               highlight={t.about.headingHighlight}
               after={t.about.headingAfter}
-              className="text-2xl font-bold leading-tight tracking-tight sm:text-3xl"
+              className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl"
             />
-            <p className="mt-3 max-w-xl text-sm text-muted">{t.about.body}</p>
+            <p className="mt-4 max-w-xl text-sm text-muted sm:text-base">{t.about.body}</p>
           </motion.div>
 
           <motion.div
             variants={tileVariant}
-            className="neu-raised flex items-center rounded-3xl p-6 lg:col-span-2 lg:row-span-1"
+            className="glass flex items-center rounded-3xl p-6 sm:p-8 lg:col-span-2 lg:row-span-1"
           >
-            <p className="font-display text-base leading-snug">&ldquo;{t.about.quote}&rdquo;</p>
+            <p className="font-display text-lg leading-snug sm:text-xl">
+              &ldquo;{t.about.quote}&rdquo;
+            </p>
           </motion.div>
 
           {t.about.highlights.map((h, i) => (
             <motion.div
               key={i}
               variants={tileVariant}
-              className="neu-chip flex flex-col justify-center rounded-2xl px-4 py-3 lg:col-span-1"
+              className="glass flex flex-col justify-center rounded-2xl px-4 py-3 sm:px-6 sm:py-5 lg:col-span-1"
             >
-              <p className="text-xs uppercase tracking-[0.15em] text-muted">
-                {h.label}
-              </p>
-              <p className="mt-1 font-display text-sm font-semibold text-gradient">
+              <p className="text-xs uppercase tracking-[0.15em] text-muted">{h.label}</p>
+              <p className="mt-1 font-display text-sm font-semibold text-gradient sm:text-base">
                 {h.value}
               </p>
             </motion.div>

@@ -23,25 +23,25 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <motion.div variants={fadeUp} className="glass glass-hover overflow-hidden rounded-2xl">
+    <motion.div variants={fadeUp} className="glass overflow-hidden rounded-2xl">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-3 px-5 py-3 text-start"
+        className="flex w-full items-center gap-3 px-5 py-4 text-start"
         aria-expanded={open}
       >
-        <span className="neu-chip flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
+        <span className="glass flex h-9 w-9 shrink-0 items-center justify-center rounded-full">
           <svg viewBox="0 0 24 24" fill="none" stroke="url(#faqGradient)" strokeWidth="1.5" className="h-4 w-4">
             <defs>
               <linearGradient id="faqGradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--brand-blue)" />
-                <stop offset="100%" stopColor="var(--brand-lime)" />
+                <stop offset="0%" stopColor="var(--accent)" />
+                <stop offset="100%" stopColor="var(--gold)" />
               </linearGradient>
             </defs>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 9a2.5 2.5 0 1 1 3.4 2.33c-.66.26-1.4.8-1.4 1.67v.5M12 17h.01" />
           </svg>
         </span>
-        <span className="flex-1 font-display text-sm font-semibold">{question}</span>
+        <span className="flex-1 font-display text-base font-semibold sm:text-lg">{question}</span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.2 }}
@@ -59,7 +59,7 @@ function FAQItem({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="px-6 pb-4 ps-[4.75rem] text-xs text-muted">{answer}</p>
+            <p className="px-6 pb-4 ps-[4.75rem] text-sm text-muted">{answer}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -72,14 +72,14 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative py-12">
+    <section id="faq" className="relative py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-4xl px-6 lg:px-10">
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.4 }}
           variants={fadeUp}
-          className="mb-8 text-center"
+          className="mb-12 text-center sm:mb-16"
         >
           <p className="mb-4 flex items-center justify-center gap-2 text-xs uppercase tracking-[0.2em] text-muted">
             <ChapterTag number="04" />
@@ -88,7 +88,7 @@ export default function FAQ() {
           <StaggerHeading
             before={t.faq.headingBefore}
             highlight={t.faq.headingHighlight}
-            className="text-2xl font-bold leading-tight tracking-tight sm:text-3xl"
+            className="text-display-md font-bold tracking-tight"
           />
         </motion.div>
 

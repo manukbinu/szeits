@@ -1,49 +1,60 @@
 @import "tailwindcss";
 
+/*
+  Signature palette: teal -> green duotone, matching the SZEITS logo mark,
+  on a near-black (dark) or soft ivory (light) base. Both themes are fully
+  designed — light is not a desaturated afterthought of dark. `--accent`
+  (teal) drives primary CTAs/links, `--accent-2` (green) is the gradient
+  stop, `--gold` is a rare brighter-green highlight (badges, the odd
+  standout number) — not the everyday link color.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --brand-blue: #2563eb;
-  --brand-green: #06b6d4;
-  --brand-lime: #06b6d4;
+  --background: #faf9fc;
+  --foreground: #10201c;
+  --muted: #5c6f68;
   --surface: #ffffff;
-  --border: #e2e8f0;
-  --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
-  --shadow-soft-hover: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 32px rgba(15, 23, 42, 0.09);
-  --nav-hover: #f1f5f9;
-  --pressed-bg: #f1f5f9;
+  --surface-2: #eef4f1;
+  --border: rgba(16, 32, 28, 0.09);
+  --accent: #0d9488;
+  --accent-2: #4d7c0f;
+  --gold: #65a30d;
+  --glow: rgba(13, 148, 136, 0.16);
+  --shadow-elev: 0 1px 2px rgba(16, 32, 28, 0.04), 0 20px 45px rgba(16, 32, 28, 0.08);
+  --shadow-elev-hover: 0 2px 4px rgba(16, 32, 28, 0.05), 0 28px 60px rgba(13, 148, 136, 0.14);
 }
 
 .dark {
-  --background: #0f172a;
-  --foreground: #f3f4f6;
-  --muted: #94a3b8;
-  --brand-lime: #22d3ee;
-  --surface: #15192b;
-  --border: rgba(255, 255, 255, 0.08);
-  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-soft-hover: 0 2px 4px rgba(0, 0, 0, 0.35), 0 16px 32px rgba(0, 0, 0, 0.4);
-  --nav-hover: rgba(255, 255, 255, 0.06);
-  --pressed-bg: #1a2035;
+  --background: #070c0b;
+  --foreground: #f2f7f5;
+  --muted: #9db3ac;
+  --surface: #0e1614;
+  --surface-2: #142320;
+  --border: rgba(255, 255, 255, 0.09);
+  --accent: #2dd4bf;
+  --accent-2: #84cc16;
+  --gold: #a3e635;
+  --glow: rgba(45, 212, 191, 0.35);
+  --shadow-elev: 0 1px 2px rgba(0, 0, 0, 0.4), 0 20px 45px rgba(0, 0, 0, 0.45);
+  --shadow-elev-hover: 0 2px 4px rgba(0, 0, 0, 0.45), 0 28px 70px rgba(45, 212, 191, 0.3);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --color-brand-blue: var(--brand-blue);
-  --color-brand-green: var(--brand-green);
-  --color-brand-lime: var(--brand-lime);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-gold: var(--gold);
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-inter);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--brand-green) transparent;
+  scrollbar-color: var(--accent) transparent;
 }
 
 html {
@@ -58,7 +69,7 @@ html.dark {
 body {
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
-  transition: color 0.25s ease;
+  transition: color 0.25s ease, background-color 0.25s ease;
 }
 
 h1,
@@ -68,19 +79,194 @@ h3,
   font-family: var(--font-display), var(--font-sans), sans-serif;
 }
 
+html[dir="rtl"] {
+  --font-sans: var(--font-arabic), Tahoma, Arial, sans-serif;
+  --font-display: var(--font-arabic), Tahoma, Arial, sans-serif;
+}
+
+/* Display type scale — headings are a design element, not just bold text */
+.text-display-xl {
+  font-size: clamp(2.75rem, 6vw + 1rem, 6.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+}
+
+.text-display-lg {
+  font-size: clamp(2.25rem, 4.5vw + 1rem, 4.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+
+.text-display-md {
+  font-size: clamp(1.75rem, 2.5vw + 1rem, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+}
+
+/* Accent gradient — used sparingly (headline highlight words, KPI numbers) */
 .text-gradient {
-  background: linear-gradient(100deg, var(--brand-blue) 0%, var(--brand-green) 100%);
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
 
-.bg-gradient-brand {
-  background: linear-gradient(100deg, var(--brand-blue) 0%, var(--brand-green) 100%);
+.bg-gradient-accent {
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-2) 100%);
 }
 
-.border-gradient-brand {
-  border-image: linear-gradient(100deg, var(--brand-blue), var(--brand-green)) 1;
+.text-gold {
+  color: var(--gold);
+}
+
+/* Glassmorphism system: two depths so hero/feature panels can read as
+   "closer" than routine content cards. */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+.dark .glass {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: var(--shadow-elev);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+.dark .glass-strong {
+  background: linear-gradient(160deg, rgba(45, 212, 191, 0.12), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(163, 230, 53, 0.18);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass:hover,
+  .glass-strong:hover,
+  .glass-hover:hover {
+    box-shadow: var(--shadow-elev-hover);
+    transform: translateY(-3px);
+    border-color: rgba(45, 212, 191, 0.35);
+  }
+}
+
+@media (hover: none) {
+  .glass:active,
+  .glass-strong:active,
+  .glass-hover:active {
+    box-shadow: var(--shadow-elev-hover);
+    transform: scale(0.98);
+  }
+}
+
+/* Buttons */
+.btn-primary {
+  color: #ffffff;
+  transition: filter 0.15s ease, transform 0.15s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 24px var(--glow);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-ghost:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 12px 32px var(--glow);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+  }
+}
+
+/* Sweeping highlight on primary CTAs, replayed on hover */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .shine:hover::after {
+    left: 125%;
+  }
+}
+
+@media (hover: none) {
+  .shine:active::after {
+    left: 125%;
+  }
+}
+
+/* Floating glow orbs used as ambient background depth */
+.glow-orb {
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+.dark .glow-orb {
+  opacity: 0.4;
+}
+
+/* Spotlight cursor-follow highlight on cards */
+.spotlight-card {
+  position: relative;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    460px circle at var(--x, 50%) var(--y, 50%),
+    var(--glow),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .spotlight-card:hover::before {
+    opacity: 1;
+  }
 }
 
 @keyframes marquee {
@@ -93,98 +279,7 @@ h3,
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
-}
-
-@keyframes gradient-drift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-.three-fallback-gradient {
-  background: linear-gradient(
-    120deg,
-    var(--brand-blue),
-    var(--brand-green),
-    var(--brand-lime),
-    var(--brand-blue)
-  );
-  background-size: 300% 300%;
-  animation: gradient-drift 12s ease infinite;
-}
-
-/* Clean SaaS surfaces */
-
-.neu-raised {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
-}
-
-.neu-pressed {
-  background: var(--pressed-bg);
-  border: 1px solid var(--border);
-}
-
-.neu-chip {
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-
-.neu-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft);
-  transition: box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.neu-btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  transition: border-color 0.15s ease, transform 0.15s ease;
-}
-
-.neu-btn:active {
-  transform: scale(0.97);
-}
-
-.btn-primary {
-  color: #ffffff;
-  transition: filter 0.15s ease, transform 0.15s ease;
-}
-
-.btn-primary:active {
-  transform: scale(0.96);
-}
-
-/* Hover-only micro-interactions: scoped to devices that actually support
-   hover so taps on touch screens don't leave a "stuck" hover state. */
-@media (hover: hover) and (pointer: fine) {
-  .neu-card:hover {
-    box-shadow: var(--shadow-soft-hover);
-    transform: translateY(-2px);
-  }
-
-  .neu-btn:hover {
-    border-color: var(--brand-blue);
-  }
-
-  .btn-primary:hover {
-    filter: brightness(1.08);
-  }
-}
-
-/* Touch equivalent: brief press feedback instead of hover */
-@media (hover: none) {
-  .neu-card:active {
-    box-shadow: var(--shadow-soft-hover);
-    transform: scale(0.98);
-  }
+  animation: marquee 34s linear infinite;
 }
 
 @keyframes blink {
@@ -202,99 +297,21 @@ h3,
   animation: blink 1s step-start infinite;
 }
 
-/* Glassmorphism */
-
-.glass {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.6) inset, var(--shadow-soft);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
-}
-
-.dark .glass {
-  background: rgba(21, 23, 30, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 1px 1px rgba(255, 255, 255, 0.06) inset, var(--shadow-soft);
-}
-
-html[dir="rtl"] {
-  --font-sans: var(--font-arabic), Tahoma, Arial, sans-serif;
-  --font-display: var(--font-arabic), Tahoma, Arial, sans-serif;
-}
-
-/* Interactive effects */
-
-.spotlight-card {
-  position: relative;
-}
-
-.spotlight-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    420px circle at var(--x, 50%) var(--y, 50%),
-    rgba(31, 124, 224, 0.14),
-    transparent 65%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.shine {
-  position: relative;
-  overflow: hidden;
-}
-
-.shine::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255, 255, 255, 0.55),
-    transparent
-  );
-  transform: skewX(-20deg);
-  transition: left 0.65s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .glass-hover:hover {
-    box-shadow: var(--shadow-soft-hover);
-    transform: translateY(-2px);
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-
-  .spotlight-card:hover::before {
-    opacity: 1;
-  }
-
-  .shine:hover::after {
-    left: 125%;
+  50% {
+    transform: translateY(-14px);
   }
 }
 
-@media (hover: none) {
-  .glass-hover:active {
-    box-shadow: var(--shadow-soft-hover);
-    transform: scale(0.98);
-  }
-
-  .shine:active::after {
-    left: 125%;
-  }
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
 }
 
-/* Respect prefers-reduced-motion: neutralize CSS animations/transitions
-   (marquee ticker, hover transforms, shine sweep, cursor blink, etc.) */
+/* Respect prefers-reduced-motion: neutralize CSS animations/transitions */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

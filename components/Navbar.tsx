@@ -43,24 +43,22 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled ? "glass" : "bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-10">
-        <a href="#home">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
+        <a href="#home" className="shrink-0">
           <Logo />
         </a>
 
-        <ul className="neu-pressed hidden items-center gap-1 rounded-full px-2 py-2 text-sm text-muted md:flex">
+        <ul className="glass hidden items-center gap-1 rounded-full px-2 py-2 text-sm text-muted md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
-                className={`inline-block rounded-full px-4 py-1.5 transition-colors hover:bg-[var(--nav-hover)] hover:text-foreground ${
-                  activeHref === link.href
-                    ? "bg-gradient-brand text-white"
-                    : ""
+                className={`relative inline-block rounded-full px-4 py-1.5 transition-colors hover:text-foreground ${
+                  activeHref === link.href ? "bg-gradient-accent text-white" : ""
                 }`}
               >
                 {link.label}
@@ -77,7 +75,7 @@ export default function Navbar() {
             <Magnetic>
               <a
                 href="#contact"
-                className="btn-primary shine bg-gradient-brand inline-block rounded-full px-5 py-2.5 text-sm font-medium"
+                className="btn-primary shine bg-gradient-accent inline-block rounded-full px-5 py-2.5 text-sm font-medium"
               >
                 {t.nav.cta}
               </a>
@@ -85,9 +83,10 @@ export default function Navbar() {
           </div>
 
           <button
-            className="neu-raised flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
+            className="btn-ghost flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full md:hidden"
             onClick={() => setMenuOpen((o) => !o)}
             aria-label={t.nav.toggleMenu}
+            aria-expanded={menuOpen}
           >
             <span
               className={`h-0.5 w-5 bg-foreground transition-transform ${
@@ -114,7 +113,7 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="glass overflow-hidden border-t border-border md:hidden"
           >
             <ul className="flex flex-col gap-6 px-6 py-8 text-lg">
@@ -133,7 +132,7 @@ export default function Navbar() {
                 <a
                   href="#contact"
                   onClick={() => setMenuOpen(false)}
-                  className="btn-primary shine bg-gradient-brand inline-block rounded-full px-5 py-2.5 text-sm font-medium"
+                  className="btn-primary shine bg-gradient-accent inline-block rounded-full px-5 py-2.5 text-sm font-medium"
                 >
                   {t.nav.cta}
                 </a>

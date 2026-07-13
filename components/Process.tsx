@@ -14,16 +14,6 @@ import type { ProcessStep } from "@/lib/i18n/types";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// The solar-system experience renders this section inside a fixed,
-// non-scrolling panel — there's no real page scroll left for ScrollTrigger's
-// pin+scrub to hook into there, and pinning anyway just reserves a huge
-// unused spacer. Skip the scroll-driven reveal (cards show at their default
-// visible state) whenever the document itself isn't actually scrollable.
-function hasScrollableDocument() {
-  if (typeof document === "undefined") return true;
-  return document.documentElement.scrollHeight > document.documentElement.clientHeight + 4;
-}
-
 const tileSpans = [
   "lg:col-span-2 lg:row-span-1",
   "lg:col-span-1 lg:row-span-1",
@@ -56,12 +46,12 @@ function ProcessCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={tilt.onMouseLeave}
         style={tilt.style}
-        className="neu-raised spotlight-card flex h-full flex-col justify-between rounded-2xl p-3 sm:rounded-3xl sm:p-4"
+        className="glass-strong spotlight-card flex h-full flex-col justify-between rounded-2xl p-5 sm:rounded-3xl sm:p-7"
       >
-        <span className="font-display text-lg font-bold text-gradient sm:text-2xl">{step.number}</span>
+        <span className="font-display text-2xl font-bold text-gradient sm:text-4xl">{step.number}</span>
         <div>
-          <h3 className="font-display text-xs font-semibold sm:text-base">{step.title}</h3>
-          <p className="mt-1 line-clamp-2 text-[11px] text-muted sm:line-clamp-none sm:text-xs">{step.description}</p>
+          <h3 className="font-display text-lg font-semibold sm:text-xl">{step.title}</h3>
+          <p className="mt-2 text-sm text-muted sm:text-base">{step.description}</p>
         </div>
       </motion.div>
     </div>
@@ -76,14 +66,12 @@ export default function Process() {
 
   useGSAP(
     () => {
-      if (prefersReducedMotion() || !hasScrollableDocument()) return;
+      if (prefersReducedMotion()) return;
       const cards = cardsRef.current.filter((el): el is HTMLDivElement => !!el);
       if (!cards.length) return;
 
       const mm = gsap.matchMedia();
 
-      // Desktop/tablet-landscape: pin the section and scrub each step in as
-      // the user scrolls, so the bento grid reveals in sequence.
       mm.add("(min-width: 1024px)", () => {
         gsap.set(cards, { opacity: 0, y: 60 });
         const tl = gsap.timeline({
@@ -101,7 +89,6 @@ export default function Process() {
         });
       });
 
-      // Mobile/tablet: skip the scroll-jack, just a lighter staggered fade-in.
       mm.add("(max-width: 1023px)", () => {
         gsap.set(cards, { opacity: 0, y: 30 });
         gsap.to(cards, {
@@ -124,21 +111,21 @@ export default function Process() {
   );
 
   return (
-    <section id="process" ref={sectionRef} className="relative overflow-hidden py-6 sm:py-10 lg:py-12">
-      <div className="mx-auto mb-4 max-w-7xl px-6 sm:mb-6 lg:mb-8 lg:px-10">
-        <p className="mb-2 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:mb-4">
+    <section id="process" ref={sectionRef} className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
+      <div className="mx-auto mb-10 max-w-7xl px-6 sm:mb-14 lg:mb-16 lg:px-10">
+        <p className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted sm:mb-4">
           <ChapterTag number="02" />
           {t.process.eyebrow}
         </p>
         <StaggerHeading
           before={t.process.headingBefore}
           highlight={t.process.headingHighlight}
-          className="text-xl font-bold leading-tight tracking-tight sm:text-2xl lg:text-3xl"
+          className="text-display-md font-bold tracking-tight"
         />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="relative grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:grid-flow-dense">
+        <div className="relative grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:grid-flow-dense">
           {t.process.steps.map((step, i) => (
             <ProcessCard
               key={step.number}

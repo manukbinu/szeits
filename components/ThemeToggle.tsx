@@ -25,7 +25,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       type="button"
       onClick={toggle}
       aria-label={isDark ? t.aria.themeToLight : t.aria.themeToDark}
-      className={`neu-btn flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${className}`}
+      className={`btn-ghost flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${className}`}
     >
       {isDark ? (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5 text-foreground">
