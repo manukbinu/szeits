@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import StaggerHeading from "@/components/StaggerHeading";
 import ChapterTag from "@/components/ChapterTag";
@@ -70,10 +70,17 @@ function FAQItem({
 export default function FAQ() {
   const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const orbY = useTransform(scrollYProgress, [0, 1], [-50, 50]);
 
   return (
-    <section id="faq" className="relative py-20 sm:py-28 lg:py-32">
-      <div className="mx-auto max-w-4xl px-6 lg:px-10">
+    <section id="faq" ref={sectionRef} className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
+      <motion.div
+        style={{ y: orbY }}
+        className="glow-orb pointer-events-none absolute top-10 end-1/3 h-64 w-64 rounded-full bg-accent/15"
+      />
+      <div className="relative mx-auto max-w-4xl px-6 lg:px-10">
         <motion.div
           initial="hidden"
           whileInView="show"

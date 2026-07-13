@@ -47,7 +47,9 @@ export default function SzeitsLogoIntro({ onDone }: { onDone: () => void }) {
   // hook's own width breakpoint doesn't tear down and replay the whole
   // (now persistent) scene.
   const tierRef = useRef(tier);
-  tierRef.current = tier;
+  useEffect(() => {
+    tierRef.current = tier;
+  }, [tier]);
   const doneRef = useRef(false);
   // Once the intro timeline finishes, the model stays on screen as a fixed
   // background (see the JSX below) instead of the whole thing unmounting.
@@ -611,12 +613,20 @@ export default function SzeitsLogoIntro({ onDone }: { onDone: () => void }) {
         )
         .init();
 
+      // Playback speed: the timeline's own internal labels/keyframes (in
+      // virtual ms) are left untouched — instead the OUTER scrub below
+      // controls how much real wall-clock time it takes to play through
+      // that virtual timeline. The first and last segments normally scrub
+      // 1:1 (real ms == virtual ms); scaling their real durations down by
+      // INTRO_SPEED makes the whole intro play back faster uniformly
+      // without re-tuning any individual animation.
+      const INTRO_SPEED = 0.38;
       const player = animate(tl, {
         id: "szeits-intro-player",
         currentTime: [
-          { to: () => tl.labels["slowmo start"], duration: () => tl.labels["slowmo start"], ease: cubicBezier(1, 0.7, 1, 0.85) },
-          { to: () => tl.labels["slowmo end"], duration: 2000, ease: cubicBezier(0.0314, 0.3616, 0.8994, -0.2122) },
-          { to: () => tl.duration, duration: () => tl.duration - tl.labels["slowmo end"] },
+          { to: () => tl.labels["slowmo start"], duration: () => tl.labels["slowmo start"] * INTRO_SPEED, ease: cubicBezier(1, 0.7, 1, 0.85) },
+          { to: () => tl.labels["slowmo end"], duration: 850, ease: cubicBezier(0.0314, 0.3616, 0.8994, -0.2122) },
+          { to: () => tl.duration, duration: () => (tl.duration - tl.labels["slowmo end"]) * INTRO_SPEED },
         ],
         duration: tl.duration,
         loop: false,

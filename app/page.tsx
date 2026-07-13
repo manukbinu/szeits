@@ -11,22 +11,25 @@ import BackToTop from "@/components/BackToTop";
 import ScrollProgress from "@/components/ScrollProgress";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SmoothScroll from "@/components/SmoothScroll";
+import BlurReveal from "@/components/BlurReveal";
 
 export default function Home() {
   return (
     <SmoothScroll>
       <ScrollProgress />
       <Navbar />
-      <main>
-        <Hero />
-        <Services />
-        <TechMarquee />
-        <Process />
-        <About />
-        <FAQ />
-        <Contact />
-      </main>
-      <Footer />
+      <BlurReveal>
+        <main>
+          <Hero />
+          <Services />
+          <TechMarquee />
+          <Process />
+          <About />
+          <FAQ />
+          <Contact />
+        </main>
+        <Footer />
+      </BlurReveal>
       <BackToTop />
       <WhatsAppButton />
     </SmoothScroll>

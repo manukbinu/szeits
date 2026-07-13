@@ -8,6 +8,7 @@ import TerminalWindow from "@/components/TerminalWindow";
 import StaggerText from "@/components/StaggerText";
 import ChapterTag from "@/components/ChapterTag";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { useIntroDone } from "@/components/SiteChrome";
 
 const HEADING_STAGGER = 0.06;
 const HEADING_BASE_DELAY = 0.32;
@@ -32,6 +33,7 @@ export default function Hero() {
   const { t, locale } = useLanguage();
   const { scrollYProgress } = useScroll();
   const reducedMotion = useReducedMotion();
+  const introDone = useIntroDone();
   const sectionRef = useRef<HTMLElement>(null);
 
   const beforeDelay = HEADING_BASE_DELAY;
@@ -71,7 +73,12 @@ export default function Hero() {
       />
 
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-10 px-6 sm:gap-14 lg:grid-cols-2 lg:px-10">
-        <motion.div variants={container} initial="hidden" animate="show" className="relative z-10">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate={introDone ? "show" : "hidden"}
+          className="relative z-10"
+        >
           <motion.p
             variants={item}
             className="glass mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-muted"
@@ -81,15 +88,29 @@ export default function Hero() {
           </motion.p>
           {locale === "en" ? (
             <h1 className="text-display-lg font-bold tracking-tight">
-              <StaggerText text={t.hero.headingBefore} delay={beforeDelay} stagger={HEADING_STAGGER} />
+              <StaggerText
+                text={t.hero.headingBefore}
+                delay={beforeDelay}
+                stagger={HEADING_STAGGER}
+                play={introDone}
+                variant="flip"
+              />
               <StaggerText
                 text={t.hero.headingHighlight}
                 delay={highlightDelay}
                 stagger={HEADING_STAGGER}
                 className="text-gradient"
+                play={introDone}
+                variant="flip"
               />
               {t.hero.headingAfter && (
-                <StaggerText text={t.hero.headingAfter} delay={afterDelay} stagger={HEADING_STAGGER} />
+                <StaggerText
+                  text={t.hero.headingAfter}
+                  delay={afterDelay}
+                  stagger={HEADING_STAGGER}
+                  play={introDone}
+                  variant="flip"
+                />
               )}
             </h1>
           ) : (
@@ -125,7 +146,7 @@ export default function Hero() {
         <div className="relative flex min-w-0 justify-center lg:justify-end">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
+            animate={introDone ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
             className="relative z-10 animate-float"
           >
@@ -136,7 +157,7 @@ export default function Hero() {
 
       <motion.div
         initial="hidden"
-        animate="show"
+        animate={introDone ? "show" : "hidden"}
         variants={container}
         className="relative z-10 mx-auto mt-12 grid max-w-7xl grid-cols-3 gap-3 px-6 sm:mt-16 sm:gap-6 lg:px-10"
       >
@@ -161,7 +182,7 @@ export default function Hero() {
 
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={introDone ? { opacity: 1 } : {}}
         transition={{ duration: 1, delay: 1.2 }}
         className="absolute inset-x-0 bottom-8 z-10 flex flex-col items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted"
       >

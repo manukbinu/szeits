@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import StaggerHeading from "@/components/StaggerHeading";
 import ChapterTag from "@/components/ChapterTag";
@@ -17,10 +18,16 @@ const tileVariant = {
 
 export default function About() {
   const { t } = useLanguage();
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const orbY = useTransform(scrollYProgress, [0, 1], [-70, 70]);
 
   return (
-    <section id="about" className="relative py-20 sm:py-28 lg:py-32">
-      <div className="glow-orb pointer-events-none absolute top-0 start-1/4 h-72 w-72 rounded-full bg-accent/20" />
+    <section id="about" ref={sectionRef} className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
+      <motion.div
+        style={{ y: orbY }}
+        className="glow-orb pointer-events-none absolute top-0 start-1/4 h-72 w-72 rounded-full bg-accent/20"
+      />
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <motion.div
           initial="hidden"
